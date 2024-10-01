@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aim Trainer</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0f2d3e;
+        }
+        #game {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: #0f2d3e;
+        }
+        .target {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ring1 {
+            background-color: #f94144; 
+            border-radius: 50%;
+            width: 20%;
+            height: 20%;
+        }
+
+        .ring2 {
+            background-color: white;
+            border-radius: 50%;
+            width: 50%;
+            height: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ring3 {
+            background-color: #f94144;
+            border-radius: 50%;
+            width: 80%;
+            height: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+
+    <script>
+        const game = document.getElementById('game');
+        const targetSize = [80, 100, 120]; 
+
+        function createTarget() {
+            const target = document.createElement('div');
+            const size = targetSize[Math.floor(Math.random() * targetSize.length)];
+            const x = Math.random() * (window.innerWidth - size);
+            const y = Math.random() * (window.innerHeight - size);
+
+            // Create the main target container
+            target.classList.add('target');
+            target.style.width = `${size}px`;
+            target.style.height = `${size}px`;
+            target.style.left = `${x}px`;
+            target.style.top = `${y}px`;
+
+            const ring1 = document.createElement('div');
+            ring1.classList.add('ring1');
+
+            const ring2 = document.createElement('div');
+            ring2.classList.add('ring2');
+
+            const ring3 = document.createElement('div');
+            ring3.classList.add('ring3');
+
+            ring2.appendChild(ring1);
+            ring3.appendChild(ring2);
+            target.appendChild(ring3); 
+
+            target.addEventListener('click', () => {
+                target.remove();
+            });
+
+            game.appendChild(target);
+
+            setTimeout(() => {
+                if (document.body.contains(target)) {
+                    target.remove();
+                }
+            }, 1500); 
+        }
+
+        setInterval(createTarget, 1000); 
+    </script>
+</body>
+</html>
