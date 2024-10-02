@@ -74,6 +74,22 @@
             align-items: center;
         }
 
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        .explode {
+            animation: explode 0.3s forwards;
+        }
+
         #timer,
         #score {
             font-family: 'Orbitron', sans-serif;
@@ -267,12 +283,15 @@
         const restartButton = document.getElementById('restartButton');
 
         let timeLeft = 60; // Tiempo en segundos
-        const targetSize = [80, 100, 120, 150];
+        const targetSize = [100]; // Tamaño estático de la diana
         let gameInterval, timerInterval;
         let score = 0;
         let totalTargets = 0;
         let lives = 3;
         let targetInterval = 2500; // Las dianas aparecerán cada 2.5 segundos
+
+        // Mantiene el objetivo actual
+        let currentTarget = null;
 
         // Mueve la diana constantemente
         function moveTarget(target) {
@@ -306,18 +325,23 @@
         }
 
         function createTarget() {
-            let x, y, size;
+            // Si ya hay una diana, elimínala antes de crear una nueva
+            if (currentTarget) {
+                currentTarget.remove();
+                loseLife(); // Perder una vida si no se ha acertado la diana anterior
+            }
+
+            let x, y, size = targetSize[0]; // Tamaño estático
 
             do {
-                size = targetSize[Math.floor(Math.random() * targetSize.length)];
                 x = Math.random() * (window.innerWidth - size);
                 y = Math.random() * (window.innerHeight - size);
             } while (isInsideUI(x, y, size)); // Verifica si está en las áreas prohibidas
 
             const target = document.createElement('div');
             target.classList.add('target');
-            target.style.width = '0px'; // Empezar desde tamaño 0
-            target.style.height = '0px'; // Empezar desde tamaño 0
+            target.style.width = `${size}px`; // Tamaño estático
+            target.style.height = `${size}px`; // Tamaño estático
             target.style.left = `${x}px`;
             target.style.top = `${y}px`;
 
@@ -334,66 +358,40 @@
             ring3.appendChild(ring2);
             target.appendChild(ring3);
 
-            // Mantener el clic durante 2 segundos para que cuente como acierto
             target.addEventListener('mousedown', () => {
                 let holdTime = 0;
-                const requiredHoldTime = 2000; // Tiempo requerido (2 segundos)
+                const requiredHoldTime = 2000;
 
                 const holdInterval = setInterval(() => {
-                    holdTime += 100; // Incrementar el tiempo mantenido
+                    holdTime += 100;
                     if (holdTime >= requiredHoldTime) {
-                        clearInterval(holdInterval); // Parar el contador
+                        clearInterval(holdInterval);
                         if (!target.dataset.hit) {
-                            score++; // Contar el acierto
+                            score++;
                             scoreDisplay.textContent = `Aciertos: ${score}`;
-                            target.dataset.hit = true; // Marcar como acertado
-                            target.remove(); // Eliminar la diana
+                            target.dataset.hit = true;
+
+                            requestAnimationFrame(() => {
+                                target.classList.add('explode');
+                            });
+
+                            setTimeout(() => {
+                                target.remove();
+                            }, 300);
                         }
                     }
                 }, 100);
 
-                // Detener el intervalo si se suelta antes de tiempo
                 target.addEventListener('mouseup', () => {
                     clearInterval(holdInterval);
                 });
             });
 
-            game.appendChild(target); // Agregar la diana al DOM
+            game.appendChild(target);
+            currentTarget = target; // Guardar la diana actual
 
-            moveTarget(target); // Mover la diana constantemente
-
-            totalTargets++; // Incrementar el total de dianas creadas
-
-            // Animar el crecimiento del objetivo desde el centro
-            animateTargetGrowth(target, 0, size, x + size / 2, y + size / 2);
-
-            setTimeout(() => {
-                if (document.body.contains(target) && !target.dataset.hit) { // Verificar si ya ha sido acertada
-                    target.remove();
-                    loseLife(); // Si no se hace clic en la diana, pierdes una vida
-                }
-            }, 3000); // Tiempo total antes de desaparecer si no se clickea
-        }
-
-        function animateTargetGrowth(target, size, maxSize, initialX, initialY) {
-            let currentSize = 0;
-            target.dataset.maxSize = maxSize; // Almacenar el tamaño máximo de la diana
-
-            function grow() {
-                currentSize += 1; // Velocidad de crecimiento ajustada
-                target.style.width = `${currentSize}px`;
-                target.style.height = `${currentSize}px`;
-
-                // Ajustar la posición para que el crecimiento sea desde el centro
-                target.style.left = `${initialX - currentSize / 2}px`;
-                target.style.top = `${initialY - currentSize / 2}px`;
-
-                if (currentSize < maxSize) {
-                    requestAnimationFrame(grow);
-                }
-            }
-
-            grow();
+            moveTarget(target);
+            totalTargets++;
         }
 
         function isInsideUI(x, y, size) {
@@ -413,10 +411,10 @@
         }
 
         function loseLife() {
-            lives--; // Restar una vida
-            updateLivesDisplay(); // Actualizar el display de corazones
+            lives--;
+            updateLivesDisplay();
             if (lives <= 0 && !gameOver) {
-                endGame(); // Si te quedas sin vidas, termina el juego
+                endGame();
             }
         }
 
@@ -433,9 +431,9 @@
 
         function startGame() {
             gameOver = false;
-            startButton.style.display = 'none'; // Ocultar el botón de inicio
-            timerDisplay.style.display = 'block'; // Mostrar el temporizador
-            timeLeft = 60; // Reiniciar el tiempo
+            startButton.style.display = 'none';
+            timerDisplay.style.display = 'block';
+            timeLeft = 60;
             timerDisplay.textContent = timeLeft;
             score = 0;
             totalTargets = 0;
@@ -452,7 +450,7 @@
                 if (timeLeft <= 0 && !gameOver) {
                     endGame();
                 }
-            }, 1000);
+            }, 3000);
         }
 
         function endGame() {
