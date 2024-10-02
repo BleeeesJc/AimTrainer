@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Seleccionar Modo de Juego</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(to bottom, rgb(5, 3, 26), #0f2d3e, #01466e);
+        }
+
+        .main {
+            width: 350px;
+            height: 500px;
+            background: red;
+            overflow: hidden;
+            background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+            border-radius: 10px;
+            box-shadow: 5px 20px 50px #000;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 50px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 5px black;
+        }
+
+        .mode-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #1e81be;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #0f2d3e;
+        }
+
+        .back-button {
+            margin-top: 20px;
+            background-color: #f94144;
+        }
+
+        .back-button:hover {
+            background-color: #c72c32;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h1>Modos de Juego</h1>
+        <div class="mode-selection">
+            <form action="/start_game" method="POST">
+                <button name="mode" value="precision">Precisión</button>
+                <button name="mode" value="seguir_objetivo">Seguir el objetivo</button>
+                <button name="mode" value="reto">Reto</button>
+            </form>
+        </div>
+        <form action="/">
+            <button class="back-button">Volver</button>
+        </form>
+    </div>
+</body>
+
+</html>
