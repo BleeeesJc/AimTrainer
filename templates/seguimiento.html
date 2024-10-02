@@ -133,19 +133,7 @@
             top: 0;
         }
 
-        #levelButtons {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
         #startButton {
-            display: none;
-            /* Oculto hasta que se seleccione un nivel */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -161,24 +149,6 @@
 
         #startButton:hover {
             background-color: #76710d;
-        }
-
-        .levelButton {
-            font-size: 20px;
-            padding: 10px 20px;
-            background-color: #807A15;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-
-        .levelButton:hover {
-            background-color: #76710d;
-        }
-
-        .levelButton.selected {
-            background-color: #f94144;
         }
 
         .modal {
@@ -261,9 +231,6 @@
 
 <body>
     <header>
-
-        <div id="difficultyDisplay" style="display:none;">Dificultad: </div>
-
         <div id="timer" style="display:none;">60</div>
         <div id="score">Aciertos: 0</div>
         <div id="lives">
@@ -277,12 +244,6 @@
     </header>
 
     <div id="game"></div>
-
-    <div id="levelButtons">
-        <button id="easyButton" class="levelButton">Fácil</button>
-        <button id="mediumButton" class="levelButton">Medio</button>
-        <button id="hardButton" class="levelButton">Difícil</button>
-    </div>
 
     <button id="startButton">Iniciar Juego</button>
 
@@ -304,8 +265,6 @@
         const endGameModal = document.getElementById('endGameModal');
         const finalScoreText = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
-        const levelButtons = document.getElementById('levelButtons');
-        const levelButtonElems = document.querySelectorAll('.levelButton');
 
         let timeLeft = 60; // Tiempo en segundos
         const targetSize = [80, 100, 120, 150];
@@ -313,43 +272,38 @@
         let score = 0;
         let totalTargets = 0;
         let lives = 3;
-        let targetInterval = 1500; // Intervalo predeterminado
+        let targetInterval = 2500; // Las dianas aparecerán cada 2.5 segundos
 
-        // Selección de nivel
-        levelButtonElems.forEach(button => {
-            button.addEventListener('click', () => {
-                // Limpiar selección previa
-                levelButtonElems.forEach(btn => btn.classList.remove('selected'));
+        // Mueve la diana constantemente
+        function moveTarget(target) {
+            let directionX = Math.random() < 0.5 ? 1 : -1;
+            let directionY = Math.random() < 0.5 ? 1 : -1;
+            const speed = 1;
 
-                // Marcar el botón seleccionado
-                button.classList.add('selected');
+            function move() {
+                const currentLeft = parseFloat(target.style.left);
+                const currentTop = parseFloat(target.style.top);
+                const newLeft = currentLeft + directionX * speed;
+                const newTop = currentTop + directionY * speed;
 
-                // Configurar el intervalo según el nivel
-                let difficulty;
-                if (button.id === 'easyButton') {
-                    targetInterval = 2000; // Intervalo más lento
-                    difficulty = 'Fácil';
-                } else if (button.id === 'mediumButton') {
-                    targetInterval = 1500;
-                    difficulty = 'Media';
-                } else if (button.id === 'hardButton') {
-                    targetInterval = 800; // Intervalo más rápido
-                    difficulty = 'Difícil';
+                // Cambiar la dirección si se acerca a los límites de la pantalla
+                if (newLeft <= 0 || newLeft + target.offsetWidth >= window.innerWidth) {
+                    directionX *= -1;
+                }
+                if (newTop <= 0 || newTop + target.offsetHeight >= window.innerHeight) {
+                    directionY *= -1;
                 }
 
-                // Mostrar la dificultad seleccionada
-                const difficultyDisplay = document.getElementById('difficultyDisplay');
-                difficultyDisplay.style.display = 'block';
-                difficultyDisplay.textContent = `Dificultad: ${difficulty}`;
+                target.style.left = `${newLeft}px`;
+                target.style.top = `${newTop}px`;
 
+                if (!target.dataset.hit) {
+                    requestAnimationFrame(move);
+                }
+            }
 
-                // Mostrar el botón "Iniciar Juego"
-                startButton.style.display = 'block';
-
-                // Desaparecer los botones de nivel
-                levelButtons.style.display = 'none';
-            });
-        });
+            move();
+        }
 
         function createTarget() {
             let x, y, size;
@@ -380,20 +334,41 @@
             ring3.appendChild(ring2);
             target.appendChild(ring3);
 
-            target.addEventListener('click', () => {
-                score++; // Incrementa el contador de aciertos
-                scoreDisplay.textContent = `Aciertos: ${score}`; // Actualiza el contador en pantalla
-                target.remove(); // Elimina la diana clickeada
+            // Mantener el clic durante 2 segundos para que cuente como acierto
+            target.addEventListener('mousedown', () => {
+                let holdTime = 0;
+                const requiredHoldTime = 2000; // Tiempo requerido (2 segundos)
+
+                const holdInterval = setInterval(() => {
+                    holdTime += 100; // Incrementar el tiempo mantenido
+                    if (holdTime >= requiredHoldTime) {
+                        clearInterval(holdInterval); // Parar el contador
+                        if (!target.dataset.hit) {
+                            score++; // Contar el acierto
+                            scoreDisplay.textContent = `Aciertos: ${score}`;
+                            target.dataset.hit = true; // Marcar como acertado
+                            target.remove(); // Eliminar la diana
+                        }
+                    }
+                }, 100);
+
+                // Detener el intervalo si se suelta antes de tiempo
+                target.addEventListener('mouseup', () => {
+                    clearInterval(holdInterval);
+                });
             });
 
-            game.appendChild(target);
+            game.appendChild(target); // Agregar la diana al DOM
+
+            moveTarget(target); // Mover la diana constantemente
+
             totalTargets++; // Incrementar el total de dianas creadas
 
             // Animar el crecimiento del objetivo desde el centro
             animateTargetGrowth(target, 0, size, x + size / 2, y + size / 2);
 
             setTimeout(() => {
-                if (document.body.contains(target)) {
+                if (document.body.contains(target) && !target.dataset.hit) { // Verificar si ya ha sido acertada
                     target.remove();
                     loseLife(); // Si no se hace clic en la diana, pierdes una vida
                 }
@@ -415,12 +390,6 @@
 
                 if (currentSize < maxSize) {
                     requestAnimationFrame(grow);
-                } else {
-                    // Si el objetivo llega al tamaño máximo sin ser clickeado, eliminarlo
-                    if (document.body.contains(target)) {
-                        target.remove();
-                        loseLife(); // Perder una vida si no se hace clic
-                    }
                 }
             }
 
@@ -428,7 +397,19 @@
         }
 
         function isInsideUI(x, y, size) {
-            return false; // No hay áreas prohibidas en este caso, pero puedes agregar reglas si las necesitas
+            const timerRect = document.getElementById('timer').getBoundingClientRect();
+            const livesRect = document.getElementById('lives').getBoundingClientRect();
+            const linksRect = document.querySelector('.links').getBoundingClientRect();
+
+            if (
+                (x < timerRect.right && x + size > timerRect.left && y < timerRect.bottom && y + size > timerRect.top) ||
+                (x < livesRect.right && x + size > livesRect.left && y < livesRect.bottom && y + size > livesRect.top) ||
+                (x < linksRect.right && x + size > linksRect.left && y < linksRect.bottom && y + size > linksRect.top)
+            ) {
+                return true;
+            }
+
+            return false;
         }
 
         function loseLife() {
@@ -440,7 +421,6 @@
         }
 
         function updateLivesDisplay() {
-            // Actualizar la cantidad de corazones visibles según las vidas restantes
             const hearts = livesDisplay.querySelectorAll('.heart');
             hearts.forEach((heart, index) => {
                 if (index >= lives) {
@@ -457,16 +437,14 @@
             timerDisplay.style.display = 'block'; // Mostrar el temporizador
             timeLeft = 60; // Reiniciar el tiempo
             timerDisplay.textContent = timeLeft;
-            score = 0; // Reiniciar el contador de aciertos
-            totalTargets = 0; // Reiniciar el total de dianas creadas
-            lives = 3; // Reiniciar las vidas
-            scoreDisplay.textContent = `Aciertos: ${score}`; // Mostrar aciertos reiniciados
-            updateLivesDisplay(); // Mostrar vidas reiniciadas
+            score = 0;
+            totalTargets = 0;
+            lives = 3;
+            scoreDisplay.textContent = `Aciertos: ${score}`;
+            updateLivesDisplay();
 
-            // Usar el intervalo según el nivel seleccionado
             gameInterval = setInterval(createTarget, targetInterval);
 
-            // Iniciar el temporizador
             timerInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
@@ -478,32 +456,28 @@
         }
 
         function endGame() {
-            if (gameOver) return;  // Salir si el juego ya ha terminado
+            if (gameOver) return;
 
             gameOver = true;
             clearInterval(gameInterval);
             clearInterval(timerInterval);
 
-            // Calcular precisión
             let precision = ((score / totalTargets) * 100).toFixed(2);
 
-            // Mostrar el mensaje final con aciertos, tiempo y precisión
             finalScoreText.innerHTML = `El juego ha terminado<br>
                                         Aciertos: ${score}<br>
                                         Tiempo: ${60 - timeLeft} segundos<br>
                                         Precisión: ${precision}%`;
-            endGameModal.style.display = "block"; // Mostrar modal
+            endGameModal.style.display = "block";
         }
 
         restartButton.addEventListener('click', () => {
-            window.location.reload(); // Recargar la página al hacer clic en "Reiniciar"
+            window.location.reload();
         });
 
-
-        // Evento para iniciar el juego cuando se presiona el botón
         startButton.addEventListener('click', startGame);
 
-        let isPaused = false; // Añadir estado de pausa
+        let isPaused = false;
 
         function togglePause() {
             if (isPaused) {
@@ -517,48 +491,30 @@
         }
 
         function pauseGame() {
-            clearInterval(timerInterval); // Detener el temporizador
-            clearInterval(gameInterval);  // Detener la aparición de nuevas dianas
+            clearInterval(timerInterval);
+            clearInterval(gameInterval);
 
-            // Detener la desaparición de dianas existentes (deja de contar el tiempo para su eliminación)
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
-                // Si la diana aún no ha alcanzado su tamaño completo, la eliminamos
-                if (parseInt(target.style.width) < parseInt(target.dataset.maxSize)) {
-                    target.remove(); // Eliminar diana en proceso de crecimiento
-                } else {
-                    target.style.visibility = 'visible'; // Mantener visibles las dianas completas
-                    target.dataset.paused = true; // Marcar las dianas como pausadas
-                }
+                target.dataset.paused = true;
             });
         }
 
         function resumeGame() {
-            // Reanudar el temporizador
             timerInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
 
                 if (timeLeft <= 0 && !gameOver) {
-                    endGame(); // Solo termina el juego si no ha terminado
+                    endGame();
                 }
             }, 1000);
 
-            // Reanudar la creación de nuevas dianas
             gameInterval = setInterval(createTarget, targetInterval);
 
-            // Reanudar las dianas existentes (permitir que desaparezcan después del tiempo normal)
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
-                if (target.dataset.paused === "true") {
-                    setTimeout(() => {
-                        if (document.body.contains(target)) {
-                            target.remove();
-                            loseLife(); // Solo perder una vida si no se ha hecho clic en la diana
-                        }
-                    }, 3000); // Permitir que desaparezcan después de 3 segundos
-                    delete target.dataset.paused; // Eliminar la marca de pausa
-                }
+                delete target.dataset.paused;
             });
         }
 

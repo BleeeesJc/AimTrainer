@@ -133,19 +133,7 @@
             top: 0;
         }
 
-        #levelButtons {
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
         #startButton {
-            display: none;
-            /* Oculto hasta que se seleccione un nivel */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -161,24 +149,6 @@
 
         #startButton:hover {
             background-color: #76710d;
-        }
-
-        .levelButton {
-            font-size: 20px;
-            padding: 10px 20px;
-            background-color: #807A15;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-
-        .levelButton:hover {
-            background-color: #76710d;
-        }
-
-        .levelButton.selected {
-            background-color: #f94144;
         }
 
         .modal {
@@ -262,9 +232,7 @@
 <body>
     <header>
 
-        <div id="difficultyDisplay" style="display:none;">Dificultad: </div>
-
-        <div id="timer" style="display:none;">60</div>
+        <div id="timer" style="display:none;">00:00</div> <!-- Cambiar a cronómetro -->
         <div id="score">Aciertos: 0</div>
         <div id="lives">
             <div class="heart"></div>
@@ -277,12 +245,6 @@
     </header>
 
     <div id="game"></div>
-
-    <div id="levelButtons">
-        <button id="easyButton" class="levelButton">Fácil</button>
-        <button id="mediumButton" class="levelButton">Medio</button>
-        <button id="hardButton" class="levelButton">Difícil</button>
-    </div>
 
     <button id="startButton">Iniciar Juego</button>
 
@@ -304,52 +266,23 @@
         const endGameModal = document.getElementById('endGameModal');
         const finalScoreText = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
-        const levelButtons = document.getElementById('levelButtons');
-        const levelButtonElems = document.querySelectorAll('.levelButton');
 
-        let timeLeft = 60; // Tiempo en segundos
-        const targetSize = [80, 100, 120, 150];
-        let gameInterval, timerInterval;
+        let cronometroSegundos = 0; // Segundos totales del cronómetro
+        let timerInterval, gameInterval;
         let score = 0;
         let totalTargets = 0;
         let lives = 3;
-        let targetInterval = 1500; // Intervalo predeterminado
+        let targetInterval = 2500; // Intervalo predeterminado
 
-        // Selección de nivel
-        levelButtonElems.forEach(button => {
-            button.addEventListener('click', () => {
-                // Limpiar selección previa
-                levelButtonElems.forEach(btn => btn.classList.remove('selected'));
+        const targetSize = [80, 100, 120, 150]; // Tamaños de las dianas
 
-                // Marcar el botón seleccionado
-                button.classList.add('selected');
-
-                // Configurar el intervalo según el nivel
-                let difficulty;
-                if (button.id === 'easyButton') {
-                    targetInterval = 2000; // Intervalo más lento
-                    difficulty = 'Fácil';
-                } else if (button.id === 'mediumButton') {
-                    targetInterval = 1500;
-                    difficulty = 'Media';
-                } else if (button.id === 'hardButton') {
-                    targetInterval = 800; // Intervalo más rápido
-                    difficulty = 'Difícil';
-                }
-
-                // Mostrar la dificultad seleccionada
-                const difficultyDisplay = document.getElementById('difficultyDisplay');
-                difficultyDisplay.style.display = 'block';
-                difficultyDisplay.textContent = `Dificultad: ${difficulty}`;
-
-
-                // Mostrar el botón "Iniciar Juego"
-                startButton.style.display = 'block';
-
-                // Desaparecer los botones de nivel
-                levelButtons.style.display = 'none';
-            });
-        });
+        // Función para actualizar el cronómetro y mostrar el formato MM:SS
+        function updateCronometro() {
+            const minutos = Math.floor(cronometroSegundos / 60);
+            const segundos = cronometroSegundos % 60;
+            timerDisplay.textContent = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            cronometroSegundos++;
+        }
 
         function createTarget() {
             let x, y, size;
@@ -384,8 +317,14 @@
                 score++; // Incrementa el contador de aciertos
                 scoreDisplay.textContent = `Aciertos: ${score}`; // Actualiza el contador en pantalla
                 target.remove(); // Elimina la diana clickeada
-            });
 
+                // Disminuir el intervalo hasta un mínimo de 500 ms
+                if (targetInterval > 500) {
+                    targetInterval -= 200; // Reducir en 100ms cada vez que aciertas
+                    clearInterval(gameInterval); // Limpiar el intervalo actual
+                    gameInterval = setInterval(createTarget, targetInterval); // Iniciar uno nuevo con el intervalo actualizado
+                }
+            });
             game.appendChild(target);
             totalTargets++; // Incrementar el total de dianas creadas
 
@@ -428,7 +367,41 @@
         }
 
         function isInsideUI(x, y, size) {
-            return false; // No hay áreas prohibidas en este caso, pero puedes agregar reglas si las necesitas
+            const timerRect = document.getElementById('timer').getBoundingClientRect();
+            const livesRect = document.getElementById('lives').getBoundingClientRect();
+            const linksRect = document.querySelector('.links').getBoundingClientRect();
+
+            // Verificar si la diana está dentro del área del cronómetro
+            if (
+                x < timerRect.right &&
+                x + size > timerRect.left &&
+                y < timerRect.bottom &&
+                y + size > timerRect.top
+            ) {
+                return true;
+            }
+
+            // Verificar si la diana está dentro del área de los corazones
+            if (
+                x < livesRect.right &&
+                x + size > livesRect.left &&
+                y < livesRect.bottom &&
+                y + size > livesRect.top
+            ) {
+                return true;
+            }
+
+            // Verificar si la diana está dentro del área de los botones "Salir" y "Pausar"
+            if (
+                x < linksRect.right &&
+                x + size > linksRect.left &&
+                y < linksRect.bottom &&
+                y + size > linksRect.top
+            ) {
+                return true;
+            }
+
+            return false; // Si no está en ninguna área prohibida
         }
 
         function loseLife() {
@@ -454,27 +427,19 @@
         function startGame() {
             gameOver = false;
             startButton.style.display = 'none'; // Ocultar el botón de inicio
-            timerDisplay.style.display = 'block'; // Mostrar el temporizador
-            timeLeft = 60; // Reiniciar el tiempo
-            timerDisplay.textContent = timeLeft;
+            timerDisplay.style.display = 'block'; // Mostrar el cronómetro
+            cronometroSegundos = 0; // Reiniciar el cronómetro
             score = 0; // Reiniciar el contador de aciertos
             totalTargets = 0; // Reiniciar el total de dianas creadas
             lives = 3; // Reiniciar las vidas
             scoreDisplay.textContent = `Aciertos: ${score}`; // Mostrar aciertos reiniciados
             updateLivesDisplay(); // Mostrar vidas reiniciadas
 
-            // Usar el intervalo según el nivel seleccionado
+            // Iniciar la creación de dianas con un solo intervalo
             gameInterval = setInterval(createTarget, targetInterval);
 
-            // Iniciar el temporizador
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
-
-                if (timeLeft <= 0 && !gameOver) {
-                    endGame();
-                }
-            }, 1000);
+            // Iniciar el cronómetro
+            timerInterval = setInterval(updateCronometro, 1000); // Actualiza cada segundo
         }
 
         function endGame() {
@@ -490,7 +455,7 @@
             // Mostrar el mensaje final con aciertos, tiempo y precisión
             finalScoreText.innerHTML = `El juego ha terminado<br>
                                         Aciertos: ${score}<br>
-                                        Tiempo: ${60 - timeLeft} segundos<br>
+                                        Tiempo: ${timerDisplay.textContent}<br>
                                         Precisión: ${precision}%`;
             endGameModal.style.display = "block"; // Mostrar modal
         }
@@ -498,7 +463,6 @@
         restartButton.addEventListener('click', () => {
             window.location.reload(); // Recargar la página al hacer clic en "Reiniciar"
         });
-
 
         // Evento para iniciar el juego cuando se presiona el botón
         startButton.addEventListener('click', startGame);
@@ -517,7 +481,7 @@
         }
 
         function pauseGame() {
-            clearInterval(timerInterval); // Detener el temporizador
+            clearInterval(timerInterval); // Detener el cronómetro
             clearInterval(gameInterval);  // Detener la aparición de nuevas dianas
 
             // Detener la desaparición de dianas existentes (deja de contar el tiempo para su eliminación)
@@ -534,15 +498,8 @@
         }
 
         function resumeGame() {
-            // Reanudar el temporizador
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
-
-                if (timeLeft <= 0 && !gameOver) {
-                    endGame(); // Solo termina el juego si no ha terminado
-                }
-            }, 1000);
+            // Reanudar el cronómetro
+            timerInterval = setInterval(updateCronometro, 1000); // Actualiza cada segundo
 
             // Reanudar la creación de nuevas dianas
             gameInterval = setInterval(createTarget, targetInterval);
