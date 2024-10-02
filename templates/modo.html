@@ -69,6 +69,13 @@
         .back-button:hover {
             background-color: #c72c32;
         }
+        .button-group form {
+        display: inline; /* Mostrar los formularios en línea */
+    }
+
+    .button-group button {
+        margin-right: 10px; /* Espaciado entre los botones */
+    }
     </style>
 </head>
 
@@ -76,16 +83,29 @@
     <div class="main">
         <h1>Modos de Juego</h1>
         <div class="mode-selection">
-            <form action="/start_game" method="POST">
-                <button name="mode" value="precision">Precisión</button>
-                <button name="mode" value="seguir_objetivo">Seguir el objetivo</button>
-                <button name="mode" value="reto">Reto</button>
-            </form>
+            <div class="button-group">
+                <form action="{{ url_for('aim') }}" method="get" style="display: inline;">
+                    <button type="submit">Precisión</button>
+                </form>
+            
+                <form action="{{ url_for('seguimiento') }}" method="get" style="display: inline;">
+                    <button type="submit">Seguir el objetivo</button>
+                </form>
+            
+                <form action="{{ url_for('reto') }}" method="get" style="display: inline;">
+                    <button type="submit">Reto</button>
+                </form>
+            </div>
         </div>
         <form action="/">
-            <button class="back-button">Volver</button>
+            <button class="back-button" href="form.html">Volver</button>
         </form>
     </div>
+    <script>
+        function redirect(url) {
+            window.location.href = url;
+        }
+    </script>
 </body>
 
 </html>

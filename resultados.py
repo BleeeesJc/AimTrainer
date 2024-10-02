@@ -32,7 +32,7 @@ def register_user():
         cursor.execute(query, values)
         conn.commit()
 
-        return redirect(url_for('form.html'))
+        return redirect(url_for('/'))
 
     except Exception as e:
         conn.rollback() 
@@ -59,7 +59,7 @@ def login_user():
 
         if user:
             session['idUsuario'] = user[0]  # Guardar el idUsuario en la sesión
-            return redirect(url_for('aim'))
+            return redirect(url_for('modo'))
         else:
             return "Error: Usuario o contraseña incorrectos."
     except Exception as e:
@@ -67,17 +67,31 @@ def login_user():
     finally:
         cursor.close()
         conn.close()
-
 @app.route('/aim')
 def aim():
     return render_template('Aim.html')
+
+@app.route('/seguimiento')
+def seguimiento():
+    return render_template('seguimiento.html')
+
+@app.route('/reto')
+def reto():
+    return render_template('reto.html')
+@app.route('/modo')
+def modo():
+    return render_template('modo.html')
 
 @app.route('/guardar_resultados', methods=['POST'])
 def guardar_resultados():
     if 'idUsuario' not in session:
         return "Error: Usuario no autenticado."
+    
+    if 'idTipo' not in session:
+        return "Error: Tipo de juego no seleccionado."
 
     idUsuario = session['idUsuario']
+    idTipo = session['idTipo']  # Recuperar el idTipo de la sesión
     
     try:
         aciertos = int(request.form['aciertos'])  # Asegúrate de que 'aciertos' sea un entero
@@ -91,11 +105,12 @@ def guardar_resultados():
     cursor = conn.cursor()
 
     try:
+        # Guardar los resultados junto con el idTipo
         query = """
-        INSERT INTO resultados (idUsuario, aciertos, tiempo, pre) 
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO resultados (idUsuario, idTipo, aciertos, tiempo, pre) 
+        VALUES (%s, %s, %s, %s, %s)
         """ 
-        values = (idUsuario, aciertos, tiempo, precision)
+        values = (idUsuario, idTipo, aciertos, tiempo, precision)
         cursor.execute(query, values)
         conn.commit()
 
@@ -103,6 +118,46 @@ def guardar_resultados():
     except Exception as e:
         conn.rollback()
         return f"Error al guardar los resultados: {e}"
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.route('/guardar_dificultad', methods=['POST'])
+def guardar_dificultad():
+    if 'idUsuario' not in session:
+        return "Error: Usuario no autenticado.", 403
+    
+    data = request.get_json()
+
+    nombre = data.get('nombre')  # Nombre del juego
+    descripcion = data.get('descripcion')  # Descripción del juego
+    dificultad = data.get('dificultad')  # Dificultad seleccionada
+    
+    conn = connect_to_database()
+    cursor = conn.cursor()
+
+    try:
+        # Insertar los datos en la tabla tipo_juego
+        query = """
+        INSERT INTO tipo_juego (nombre, descripcion, dificultad) 
+        VALUES (%s, %s, %s)
+        """
+        values = (nombre, descripcion, dificultad)
+        cursor.execute(query, values)
+        
+        # Obtener el id del último registro insertado (idTipo)
+        idTipo = cursor.lastrowid
+        
+        conn.commit()
+
+        # Guardar el idTipo en la sesión
+        session['idTipo'] = idTipo
+
+        return {"status": "success", "idTipo": idTipo}, 200
+
+    except Exception as e:
+        conn.rollback()
+        return f"Error al guardar la dificultad: {e}", 500
     finally:
         cursor.close()
         conn.close()

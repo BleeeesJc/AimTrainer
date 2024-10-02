@@ -326,15 +326,20 @@
 
                 // Configurar el intervalo según el nivel
                 let difficulty;
+                let difficultyName;  // Nombre del nivel de dificultad
+
                 if (button.id === 'easyButton') {
                     targetInterval = 2000; // Intervalo más lento
                     difficulty = 'Fácil';
+                    difficultyName = 'Fácil';
                 } else if (button.id === 'mediumButton') {
                     targetInterval = 1500;
                     difficulty = 'Media';
+                    difficultyName = 'Media';
                 } else if (button.id === 'hardButton') {
                     targetInterval = 800; // Intervalo más rápido
                     difficulty = 'Difícil';
+                    difficultyName = 'Difícil';
                 }
 
                 // Mostrar la dificultad seleccionada
@@ -342,6 +347,30 @@
                 difficultyDisplay.style.display = 'block';
                 difficultyDisplay.textContent = `Dificultad: ${difficulty}`;
 
+                // Enviar la dificultad al servidor Flask
+                fetch('/guardar_dificultad', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nombre: 'Precision',  // Nombre del juego
+                        descripcion: 'Juego de Precision',  // Descripción del juego
+                        dificultad: difficultyName  // Dificultad seleccionada
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al guardar la dificultad.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Dificultad guardada exitosamente:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
 
                 // Mostrar el botón "Iniciar Juego"
                 startButton.style.display = 'block';
@@ -350,7 +379,6 @@
                 levelButtons.style.display = 'none';
             });
         });
-
         function createTarget() {
             let x, y, size;
 
@@ -493,6 +521,7 @@
                                         Tiempo: ${60 - timeLeft} segundos<br>
                                         Precisión: ${precision}%`;
             endGameModal.style.display = "block"; // Mostrar modal
+            enviarResultados(score, 60 - timeLeft, precision);
         }
 
         restartButton.addEventListener('click', () => {
@@ -563,6 +592,30 @@
         }
 
         pauseButton.addEventListener('click', togglePause);
+
+        function enviarResultados(aciertos, tiempo, precision) {
+            fetch('http://127.0.0.1:5000/guardar_resultados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'aciertos': aciertos,
+                    'tiempo': tiempo,
+                    'precision': precision
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error al guardar los resultados: ' + response.status);
+                    }
+                    alert('Resultados guardados exitosamente');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un problema al guardar los resultados: ' + error.message);
+                });
+        }
     </script>
 
 </body>
