@@ -213,6 +213,20 @@
         .links a:hover {
             text-decoration: underline;
         }
+
+        .links #pauseButton {
+            color: white;
+            font-size: 25px;
+            font-family: 'Orbitron', sans-serif;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        .links #pauseButton:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -225,7 +239,9 @@
             <div class="heart"></div>
             <div class="heart"></div>
         </div> <!-- Mostrar 3 corazones personalizados -->
-        <div class="links"><a href="form.html">Ingresar</a></div>
+        <div class="links"><a href="form.html">Ingresar</a>
+            <button id="pauseButton">Pausar</button>
+        </div>
     </header>
 
     <div id="game"></div>
@@ -241,6 +257,7 @@
     </div>
 
     <script>
+        let gameOver = false;
         const game = document.getElementById('game');
         const timerDisplay = document.getElementById('timer');
         const scoreDisplay = document.getElementById('score');
@@ -350,7 +367,7 @@
         function loseLife() {
             lives--; // Restar una vida
             updateLivesDisplay(); // Actualizar el display de corazones
-            if (lives <= 0) {
+            if (lives <= 0 && !gameOver) {
                 endGame(); // Si te quedas sin vidas, termina el juego
             }
         }
@@ -368,6 +385,7 @@
         }
 
         function startGame() {
+            gameOver = false;
             startButton.style.display = 'none'; // Ocultar el botón de inicio
             timerDisplay.style.display = 'block'; // Mostrar el temporizador
             timeLeft = 60; // Reiniciar el tiempo
@@ -379,20 +397,23 @@
             updateLivesDisplay(); // Mostrar vidas reiniciadas
 
             // Iniciar la creación de objetivos cada 2 segundos (2000 milisegundos)
-            gameInterval = setInterval(createTarget, 2000);
+            gameInterval = setInterval(createTarget, 1500);
 
             // Iniciar el temporizador
             timerInterval = setInterval(() => {
                 timeLeft--;
                 timerDisplay.textContent = timeLeft;
 
-                if (timeLeft <= 0) {
+                if (timeLeft <= 0 && !gameOver) {
                     endGame();
                 }
             }, 1000);
         }
 
         function endGame() {
+            if (gameOver) return;  // Salir si el juego ya ha terminado
+
+            gameOver = true;
             clearInterval(gameInterval);
             clearInterval(timerInterval);
 
@@ -405,6 +426,7 @@
                                         Tiempo: ${60 - timeLeft} segundos<br>
                                         Precisión: ${precision}%`;
             endGameModal.style.display = "block"; // Mostrar modal
+            enviarResultados(score, 60 - timeLeft, precision);
         }
 
         restartButton.addEventListener('click', () => {
@@ -414,6 +436,65 @@
 
         // Evento para iniciar el juego cuando se presiona el botón
         startButton.addEventListener('click', startGame);
+        //-----------------------------------------------------------------------------
+        let isPaused = false; // Añadir estado de pausa
+
+        function togglePause() {
+            if (isPaused) {
+                pauseButton.textContent = 'Pausar';
+                resumeGame();
+            } else {
+                pauseButton.textContent = 'Reanudar';
+                pauseGame();
+            }
+            isPaused = !isPaused;
+        }
+
+        function pauseGame() {
+            clearInterval(timerInterval);
+            clearInterval(gameInterval);
+            const targets = document.querySelectorAll('.target');
+            targets.forEach(target => {
+                target.style.visibility = 'hidden'; // Ocultar dianas
+            });
+        }
+
+        function resumeGame() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 0 && !gameOver) {
+                    endGame(); // Solo termina el juego si no ha terminado
+                }
+            }, 1000);
+
+            gameInterval = setInterval(createTarget, 2000);
+            const targets = document.querySelectorAll('.target');
+            targets.forEach(target => {
+                target.style.visibility = 'visible'; // Mostrar dianas
+            });
+        }
+
+        // Añadir evento de clic para el botón de pausa
+        pauseButton.addEventListener('click', togglePause);
+
+
+        function enviarResultados(aciertos, tiempo, precision) {
+            fetch('http://127.0.0.1:5000/guardar_resultados', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'aciertos': aciertos,
+                    'tiempo': tiempo,
+                    'precision': precision
+                })
+            }).then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => console.error('Error:', error));
+        }
     </script>
 
 </body>
