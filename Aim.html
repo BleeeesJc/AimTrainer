@@ -1,26 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aim Trainer</title>
 
     <!-- Cargar las fuentes Orbitron y Roboto desde Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
 
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background-color: #0f2d3e;
-            font-family: 'Roboto', sans-serif; /* Tipografía más cerrada para el resto del código */
+            font-family: 'Roboto', sans-serif;
+            /* Tipografía más cerrada para el resto del código */
         }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #0f2d3e;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            z-index: 10;
+            font-family: 'Orbitron', sans-serif;
+        }
+
         #game {
             position: relative;
             width: 100vw;
             height: 100vh;
             background-color: #0f2d3e;
         }
+
         .target {
             position: absolute;
             border-radius: 50%;
@@ -31,7 +49,7 @@
         }
 
         .ring1 {
-            background-color: #f94144; 
+            background-color: #f94144;
             border-radius: 50%;
             width: 20%;
             height: 20%;
@@ -57,8 +75,10 @@
             align-items: center;
         }
 
-        #timer, #score {
-            font-family: 'Orbitron', sans-serif; /* Tipografía futurista para el temporizador y aciertos */
+        #timer,
+        #score {
+            font-family: 'Orbitron', sans-serif;
+            /* Tipografía futurista para el temporizador y aciertos */
             position: absolute;
             font-size: 30px;
             color: white;
@@ -66,7 +86,10 @@
 
         #timer {
             top: 20px;
-            right: 20px;
+            left: 50%;
+            /* Mover el temporizador hacia el centro */
+            transform: translateX(-50%);
+            /* Centrarlo horizontalmente */
         }
 
         #score {
@@ -77,7 +100,8 @@
         #lives {
             position: absolute;
             top: 20px;
-            left: 250px; /* Mover los corazones un poco más a la derecha */
+            left: 250px;
+            /* Mover los corazones un poco más a la derecha */
             display: flex;
             gap: 30px;
         }
@@ -121,63 +145,91 @@
             transform: translate(-50%, -50%);
             font-size: 20px;
             padding: 10px 20px;
-            background-color: #807A15; 
+            background-color: #807A15;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 10px; /*Bordes redondeados */
+            border-radius: 10px;
+            /*Bordes redondeados */
         }
 
         #startButton:hover {
-            background-color: #76710d; 
+            background-color: #76710d;
         }
 
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; 
-            z-index: 1; 
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            z-index: 1;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
         }
 
         .modal-content {
             background-color: white;
-            margin: 15% auto; 
+            margin: 15% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 30%;
             text-align: center;
             font-size: 20px;
-            border-radius: 15px; /*Bordes redondeados*/
+            border-radius: 15px;
+            /*Bordes redondeados*/
         }
 
         .modal button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #807A15; 
+            background-color: #807A15;
             color: white;
             border: none;
             cursor: pointer;
-            border-radius: 10px; /* Bordes redondeados */
+            border-radius: 10px;
+            /* Bordes redondeados */
         }
 
         .modal button:hover {
-            background-color: #76710d; 
+            background-color: #76710d;
+        }
+
+        .links {
+            position: absolute;
+            top: 20px;
+            right: 100px;
+        }
+
+        .links a {
+            color: white;
+            font-size: 25px;
+            font-family: 'Orbitron', sans-serif;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
+    <header>
+        <div id="timer" style="display:none;">60</div> <!-- Temporizador oculto hasta que inicie el juego -->
+        <div id="score">Aciertos: 0</div> <!-- Contador de aciertos -->
+        <div id="lives">
+            <div class="heart"></div>
+            <div class="heart"></div>
+            <div class="heart"></div>
+        </div> <!-- Mostrar 3 corazones personalizados -->
+        <div class="links"><a href="form.html">Ingresar</a></div>
+    </header>
+
     <div id="game"></div>
-    <div id="timer" style="display:none;">60</div> <!-- Temporizador oculto hasta que inicie el juego -->
-    <div id="score">Aciertos: 0</div> <!-- Contador de aciertos -->
-    <div id="lives">
-        <div class="heart"></div>
-        <div class="heart"></div>
-        <div class="heart"></div>
-    </div> <!-- Mostrar 3 corazones personalizados -->
+
     <button id="startButton">Iniciar Juego</button> <!-- Botón de inicio -->
 
     <!-- Modal personalizado -->
@@ -198,7 +250,7 @@
         const finalScoreText = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
         let timeLeft = 60; // Tiempo en segundos
-        const targetSize = [80, 100, 120]; 
+        const targetSize = [80, 100, 120, 150];
         let gameInterval, timerInterval;
         let score = 0; // Inicializamos el contador de aciertos
         let totalTargets = 0; // Contador de dianas creadas
@@ -222,6 +274,30 @@
             });
         }
 
+        function animateTargetGrowth(target, size, maxSize, initialX, initialY) {
+            let currentSize = 0;
+            function grow() {
+                currentSize += 0.5; // Velocidad de crecimiento ajustada
+                target.style.width = `${currentSize}px`;
+                target.style.height = `${currentSize}px`;
+
+                // Ajustar la posición para que el crecimiento sea desde el centro
+                target.style.left = `${initialX - currentSize / 2}px`;
+                target.style.top = `${initialY - currentSize / 2}px`;
+
+                if (currentSize < maxSize) {
+                    requestAnimationFrame(grow);
+                } else {
+                    // Si el objetivo llega al tamaño máximo sin ser clickeado, eliminarlo
+                    if (document.body.contains(target)) {
+                        target.remove();
+                        loseLife(); // Perder una vida si no se hace clic
+                    }
+                }
+            }
+            grow();
+        }
+
         function createTarget() {
             let x, y, size;
 
@@ -233,8 +309,8 @@
 
             const target = document.createElement('div');
             target.classList.add('target');
-            target.style.width = `${size}px`;
-            target.style.height = `${size}px`;
+            target.style.width = '0px'; // Empezar desde tamaño 0
+            target.style.height = '0px'; // Empezar desde tamaño 0
             target.style.left = `${x}px`;
             target.style.top = `${y}px`;
 
@@ -249,7 +325,7 @@
 
             ring2.appendChild(ring1);
             ring3.appendChild(ring2);
-            target.appendChild(ring3); 
+            target.appendChild(ring3);
 
             target.addEventListener('click', () => {
                 score++; // Incrementa el contador de aciertos
@@ -260,12 +336,15 @@
             game.appendChild(target);
             totalTargets++; // Incrementar el total de dianas creadas
 
+            // Animar el crecimiento del objetivo desde el centro
+            animateTargetGrowth(target, 0, size, x + size, y + size / 2);
+
             setTimeout(() => {
                 if (document.body.contains(target)) {
                     target.remove();
                     loseLife(); // Si no se hace clic en la diana, pierdes una vida
                 }
-            }, 1500); 
+            }, 3000); // Tiempo total antes de desaparecer si no se clickea
         }
 
         function loseLife() {
@@ -336,5 +415,7 @@
         // Evento para iniciar el juego cuando se presiona el botón
         startButton.addEventListener('click', startGame);
     </script>
+
 </body>
+
 </html>
