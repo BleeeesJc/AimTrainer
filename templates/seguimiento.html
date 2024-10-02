@@ -273,6 +273,7 @@
 
     <script>
         let gameOver = false;
+        let isHolding = false; // Variable global para saber si el jugador está presionando la diana
         const game = document.getElementById('game');
         const timerDisplay = document.getElementById('timer');
         const scoreDisplay = document.getElementById('score');
@@ -325,10 +326,16 @@
         }
 
         function createTarget() {
+            if (isHolding) {
+                return; // Salimos de la función sin hacer nada
+            }
+
             // Si ya hay una diana, elimínala antes de crear una nueva
             if (currentTarget) {
+                if (!currentTarget.dataset.hit) {
+                    loseLife(); // Perder una vida si no se ha acertado la diana anterior
+                }
                 currentTarget.remove();
-                loseLife(); // Perder una vida si no se ha acertado la diana anterior
             }
 
             let x, y, size = targetSize[0]; // Tamaño estático
@@ -359,6 +366,7 @@
             target.appendChild(ring3);
 
             target.addEventListener('mousedown', () => {
+                isHolding = true; // El jugador está presionando la diana
                 let holdTime = 0;
                 const requiredHoldTime = 2000;
 
@@ -369,7 +377,7 @@
                         if (!target.dataset.hit) {
                             score++;
                             scoreDisplay.textContent = `Aciertos: ${score}`;
-                            target.dataset.hit = true;
+                            target.dataset.hit = true; // Establecer que la diana fue acertada
 
                             requestAnimationFrame(() => {
                                 target.classList.add('explode');
@@ -377,15 +385,19 @@
 
                             setTimeout(() => {
                                 target.remove();
+                                isHolding = false; // Asegurarnos de que isHolding es false
+                                createTarget(); // Crear una nueva diana
                             }, 300);
                         }
                     }
                 }, 100);
 
                 target.addEventListener('mouseup', () => {
+                    isHolding = false; // El jugador ha soltado la diana
                     clearInterval(holdInterval);
-                });
+                }, { once: true }); // Agregamos { once: true } para evitar múltiples listeners
             });
+
 
             game.appendChild(target);
             currentTarget = target; // Guardar la diana actual
@@ -441,7 +453,11 @@
             scoreDisplay.textContent = `Aciertos: ${score}`;
             updateLivesDisplay();
 
-            gameInterval = setInterval(createTarget, targetInterval);
+            gameInterval = setInterval(() => {
+                if (!isHolding) {
+                    createTarget();
+                }
+            }, targetInterval);
 
             timerInterval = setInterval(() => {
                 timeLeft--;
