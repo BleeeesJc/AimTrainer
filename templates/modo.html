@@ -1,109 +1,172 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- Se define el tipo de documento como HTML5 y el idioma de la página como español -->
 
 <head>
     <meta charset="UTF-8">
+    <!-- Se define la codificación de caracteres como UTF-8, compatible con múltiples lenguajes -->
+
     <title>Seleccionar Modo de Juego</title>
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
+
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap"
         rel="stylesheet">
+    <!-- Se importan dos fuentes desde Google Fonts: 'Orbitron' y 'Roboto', para ser usadas en la página -->
+
     <style>
+        /* Estilos CSS definidos dentro del archivo HTML */
+
         body {
             margin: 0;
+            /* Elimina márgenes por defecto */
             padding: 0;
+            /* Elimina el padding por defecto */
             display: flex;
+            /* Define el cuerpo como un contenedor flexible */
             justify-content: center;
+            /* Centra el contenido horizontalmente */
             align-items: center;
+            /* Centra el contenido verticalmente */
             min-height: 100vh;
+            /* Altura mínima del cuerpo es del 100% del alto de la ventana */
             font-family: 'Orbitron', sans-serif;
+            /* Usa la fuente 'Orbitron' para el texto del cuerpo */
             background: linear-gradient(to bottom, rgb(5, 3, 26), #0f2d3e, #01466e);
+            /* Fondo degradado de colores oscuros de azul */
         }
 
         .main {
             width: 350px;
+            /* El contenedor principal tiene un ancho de 350px */
             height: 500px;
+            /* El contenedor principal tiene una altura de 500px */
             background: red;
+            /* Fondo rojo (aunque se sobrescribe por la imagen de fondo) */
             overflow: hidden;
-            background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+            /* Oculta cualquier contenido que se desborde del contenedor */
+            background: url("...") no-repeat center/cover;
+            /* Imagen de fondo centrada y ajustada para cubrir todo el contenedor */
             border-radius: 10px;
+            /* Bordes redondeados para el contenedor principal */
             box-shadow: 5px 20px 50px #000;
+            /* Sombra oscura para darle un efecto de profundidad al contenedor */
             text-align: center;
+            /* Alinea el contenido del contenedor al centro */
             padding: 20px;
+            /* Padding interno de 20px para el contenido dentro del contenedor */
         }
 
         h1 {
             color: white;
+            /* Color de texto blanco para el título */
             font-size: 50px;
+            /* Tamaño de fuente grande para el título */
             margin-bottom: 40px;
+            /* Margen inferior de 40px para separar el título del resto del contenido */
             text-shadow: 2px 2px 5px black;
+            /* Sombra de texto para mejorar la legibilidad del título */
         }
 
         .mode-selection {
             display: flex;
+            /* Define el contenedor como un flexbox */
             flex-direction: column;
+            /* Los elementos dentro se colocan en una columna (de arriba hacia abajo) */
             gap: 40px;
+            /* Espacio de 40px entre cada botón de modo de juego */
         }
 
         button {
             width: 100%;
+            /* Los botones ocupan el 100% del ancho del contenedor */
             padding: 15px;
+            /* Padding interno de 15px para los botones */
             font-size: 18px;
+            /* Tamaño de fuente de 18px */
             font-weight: bold;
+            /* Negrita para el texto de los botones */
             background-color: #1e81be;
+            /* Fondo azul para los botones */
             color: white;
+            /* Texto blanco para los botones */
             border: none;
+            /* Sin bordes */
             border-radius: 10px;
+            /* Bordes redondeados para los botones */
             cursor: pointer;
+            /* El cursor cambia a pointer al pasar sobre los botones */
             transition: background-color 0.3s;
+            /* Transición suave para el cambio de color de fondo al hacer hover */
             margin-bottom: 10px;
+            /* Margen inferior de 10px para separar los botones entre sí */
         }
 
         button:hover {
             background-color: #0f2d3e;
+            /* Cambia el color de fondo a un azul más oscuro al pasar el cursor por encima */
         }
 
         .back-button {
             margin-top: 20px;
+            /* Margen superior para separar el botón 'Volver' del resto del contenido */
             background-color: #f94144;
+            /* Fondo rojo para el botón 'Volver' */
         }
 
         .back-button:hover {
             background-color: #c72c32;
+            /* Cambia a un rojo más oscuro al pasar el cursor sobre el botón 'Volver' */
         }
-        .button-group form {
-        display: inline; /* Mostrar los formularios en línea */
-    }
 
-    .button-group button {
-        margin-right: 10px; /* Espaciado entre los botones */
-    }
+        .button-group form {
+            display: inline;
+            /* Mostrar los formularios en línea, para que los botones se dispongan en fila */
+        }
+
+        .button-group button {
+            margin-right: 10px;
+            /* Añade un margen derecho de 10px entre los botones para separarlos */
+        }
     </style>
 </head>
 
 <body>
     <div class="main">
+        <!-- Contenedor principal que contiene el título y los botones de selección de modo de juego -->
         <h1>Modos de Juego</h1>
+        <!-- Título de la página -->
+
         <div class="mode-selection">
+            <!-- Contenedor de selección de modos de juego -->
             <div class="button-group">
+                <!-- Grupo de botones de selección de modos -->
                 <form action="{{ url_for('aim') }}" method="get" style="display: inline;">
+                    <!-- Botón para seleccionar el modo 'Precisión', redirige a la URL correspondiente -->
                     <button type="submit">Precisión</button>
                 </form>
-            
+
                 <form action="{{ url_for('seguimiento') }}" method="get" style="display: inline;">
+                    <!-- Botón para seleccionar el modo 'Seguir el objetivo', redirige a la URL correspondiente -->
                     <button type="submit">Seguir el objetivo</button>
                 </form>
-            
+
                 <form action="{{ url_for('reto') }}" method="get" style="display: inline;">
+                    <!-- Botón para seleccionar el modo 'Reto', redirige a la URL correspondiente -->
                     <button type="submit">Reto</button>
                 </form>
             </div>
         </div>
+
         <form action="/">
+            <!-- Botón 'Volver' que redirige al inicio (/) -->
             <button class="back-button" href="form.html">Volver</button>
         </form>
     </div>
+
     <script>
         function redirect(url) {
             window.location.href = url;
+            /* Función JavaScript que redirige al usuario a una URL dada */
         }
     </script>
 </body>

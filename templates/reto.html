@@ -1,71 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- Se define el tipo de documento como HTML5 y el idioma de la página como español -->
 
 <head>
     <meta charset="UTF-8">
+    <!-- Se define la codificación de caracteres como UTF-8 para soportar múltiples lenguajes -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Se establece la vista para que la página sea responsive en dispositivos móviles -->
+
     <title>Aim Trainer</title>
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
 
     <!-- Cargar las fuentes Orbitron y Roboto desde Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap"
         rel="stylesheet">
+    <!-- Enlace a Google Fonts para importar las fuentes 'Orbitron' y 'Roboto' -->
 
     <style>
+        /* Estilos CSS definidos dentro del archivo HTML */
+
         body {
             margin: 0;
+            /* Elimina márgenes por defecto */
             overflow: hidden;
+            /* Oculta el desbordamiento para evitar scroll innecesario */
             background-color: #0f2d3e;
+            /* Fondo oscuro azul para el cuerpo */
             font-family: 'Roboto', sans-serif;
+            /* Usa la fuente 'Roboto' para el texto del cuerpo */
         }
 
         header {
             position: fixed;
+            /* Posición fija para mantener el encabezado siempre visible */
             top: 0;
+            /* Posiciona el encabezado en la parte superior */
             width: 100%;
+            /* El encabezado ocupa el 100% del ancho */
             background-color: #0f2d3e;
+            /* Fondo oscuro para el encabezado */
             color: white;
+            /* Texto blanco */
             display: flex;
+            /* Flexbox para alinear los elementos dentro del encabezado */
             justify-content: space-between;
+            /* Alinea los elementos dentro del encabezado con espacio entre ellos */
             padding: 10px 20px;
+            /* Padding interno del encabezado */
             z-index: 10;
+            /* Asegura que el encabezado tenga prioridad sobre otros elementos */
             font-family: 'Orbitron', sans-serif;
+            /* Usa la fuente 'Orbitron' para el texto del encabezado */
         }
 
         #game {
             position: relative;
+            /* El contenedor del juego está posicionado relativamente dentro del body */
             width: 100vw;
+            /* Ancho completo de la ventana */
             height: 100vh;
+            /* Alto completo de la ventana */
             background-color: #0f2d3e;
+            /* Fondo azul oscuro para el área del juego */
         }
 
         .target {
             position: absolute;
+            /* Las dianas serán posicionadas absolutamente dentro del área del juego */
             border-radius: 50%;
+            /* Bordes redondeados (círculos) */
             cursor: pointer;
+            /* Cambia el cursor a pointer cuando se pasa sobre las dianas */
             display: flex;
+            /* Flexbox para centrar el contenido de las dianas */
             justify-content: center;
             align-items: center;
         }
 
         .ring1 {
             background-color: #f94144;
+            /* Color rojo para el anillo exterior de la diana */
             border-radius: 50%;
+            /* Bordes redondeados para formar un círculo */
             width: 20%;
+            /* Ancho relativo del anillo exterior */
             height: 20%;
+            /* Alto relativo del anillo exterior */
         }
 
         .ring2 {
             background-color: white;
+            /* Color blanco para el segundo anillo */
             border-radius: 50%;
             width: 50%;
             height: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
+            /* Flexbox para centrar el contenido */
         }
 
         .ring3 {
             background-color: #f94144;
+            /* Color rojo para el anillo central */
             border-radius: 50%;
             width: 80%;
             height: 80%;
@@ -77,46 +115,70 @@
         #timer,
         #score {
             font-family: 'Orbitron', sans-serif;
+            /* Usa la fuente 'Orbitron' para estos textos */
             position: absolute;
+            /* Posicionamiento absoluto dentro del área del juego */
             font-size: 30px;
+            /* Tamaño de fuente de 30px */
             color: white;
+            /* Texto blanco */
         }
 
         #timer {
             top: 20px;
+            /* Posición superior de 20px desde la parte superior de la ventana */
             left: 50%;
+            /* Centrando el cronómetro horizontalmente */
             transform: translateX(-50%);
+            /* Compensa el desplazamiento para centrar el cronómetro */
         }
 
         #score {
             top: 20px;
+            /* Posición superior de 20px */
             left: 20px;
+            /* Posición a 20px desde la izquierda */
         }
 
         #lives {
             position: absolute;
+            /* Posicionamiento absoluto para el contador de vidas */
             top: 20px;
+            /* A 20px desde la parte superior */
             left: 250px;
+            /* A 250px desde la izquierda */
             display: flex;
+            /* Flexbox para mostrar los corazones en fila */
             gap: 30px;
+            /* Espaciado de 30px entre cada corazón */
         }
 
         .heart {
             width: 30px;
+            /* Ancho del corazón */
             height: 30px;
+            /* Alto del corazón */
             background-color: #f94144;
+            /* Color de fondo rojo */
             position: relative;
+            /* Posicionamiento relativo */
             display: inline-block;
+            /* Se muestra en línea */
             margin-right: 5px;
+            /* Espaciado derecho entre los corazones */
             transform: rotate(-45deg);
+            /* Rotación del div para formar la forma de corazón */
         }
 
         .heart::before,
         .heart::after {
             content: "";
+            /* Contenido vacío para los pseudoelementos */
             position: absolute;
             background-color: #f94144;
+            /* Color de fondo rojo */
             border-radius: 50%;
+            /* Bordes redondeados para formar círculos */
         }
 
         .heart::before {
@@ -124,6 +186,7 @@
             height: 30px;
             top: -15px;
             left: 0;
+            /* Posiciona el círculo superior izquierdo del corazón */
         }
 
         .heart::after {
@@ -131,6 +194,7 @@
             height: 30px;
             left: 15px;
             top: 0;
+            /* Posiciona el círculo superior derecho del corazón */
         }
 
         #startButton {
@@ -138,21 +202,31 @@
             top: 50%;
             left: 50%;
             transform: translateX(-50%);
+            /* Centra el botón en la pantalla */
             font-size: 20px;
+            /* Tamaño de fuente del botón */
             padding: 10px 20px;
+            /* Padding interno del botón */
             background-color: #807A15;
+            /* Fondo marrón del botón */
             color: white;
+            /* Texto blanco */
             border: none;
+            /* Sin borde */
             cursor: pointer;
+            /* Cambia el cursor a pointer */
             border-radius: 10px;
+            /* Bordes redondeados */
         }
 
         #startButton:hover {
             background-color: #76710d;
+            /* Cambia a un tono más oscuro al pasar el cursor por el botón */
         }
 
         .modal {
             display: none;
+            /* Oculta el modal por defecto */
             position: fixed;
             z-index: 1;
             left: 0;
@@ -160,6 +234,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.4);
+            /* Fondo semitransparente para el modal */
         }
 
         .modal-content {
@@ -231,33 +306,39 @@
 
 <body>
     <header>
-
-        <div id="timer" style="display:none;">00:00</div> <!-- Cambiar a cronómetro -->
-        <div id="score">Aciertos: 0</div>
+        <!-- El encabezado fijo contiene el cronómetro, aciertos, vidas y botones de control -->
+        <div id="timer" style="display:none;">00:00</div> <!-- Cronómetro -->
+        <div id="score">Aciertos: 0</div> <!-- Marcador de aciertos -->
         <div id="lives">
+            <!-- Contenedor de las vidas (corazones) -->
             <div class="heart"></div>
             <div class="heart"></div>
             <div class="heart"></div>
         </div>
-        <div class="links"><a href="form.html">Salir</a>
+        <div class="links">
+            <a href="form.html">Salir</a>
+            <!-- Enlace para salir del juego -->
             <button id="pauseButton">Pausar</button>
+            <!-- Botón para pausar el juego -->
         </div>
     </header>
 
     <div id="game"></div>
+    <!-- Área principal del juego -->
 
     <button id="startButton">Iniciar Juego</button>
+    <!-- Botón para iniciar el juego -->
 
-    <!-- Modal personalizado -->
+    <!-- Modal personalizado que aparece al final del juego -->
     <div id="endGameModal" class="modal">
         <div class="modal-content">
-            <p id="finalScore"></p>
-            <button id="restartButton">Reiniciar</button>
+            <p id="finalScore"></p> <!-- Texto que muestra el puntaje final -->
+            <button id="restartButton">Reiniciar</button> <!-- Botón para reiniciar el juego -->
         </div>
     </div>
 
     <script>
-        let gameOver = false;
+        let gameOver = false; // Indica si el juego ha terminado
         const game = document.getElementById('game');
         const timerDisplay = document.getElementById('timer');
         const scoreDisplay = document.getElementById('score');
@@ -269,14 +350,14 @@
 
         let cronometroSegundos = 0; // Segundos totales del cronómetro
         let timerInterval, gameInterval;
-        let score = 0;
-        let totalTargets = 0;
-        let lives = 3;
-        let targetInterval = 2500; // Intervalo predeterminado
+        let score = 0; // Aciertos
+        let totalTargets = 0; // Total de dianas creadas
+        let lives = 3; // Número de vidas
+        let targetInterval = 2500; // Intervalo inicial de aparición de dianas
 
         const targetSize = [80, 100, 120, 150]; // Tamaños de las dianas
 
-        // Función para actualizar el cronómetro y mostrar el formato MM:SS
+        // Función para actualizar el cronómetro y mostrar en formato MM:SS
         function updateCronometro() {
             const minutos = Math.floor(cronometroSegundos / 60);
             const segundos = cronometroSegundos % 60;
@@ -284,22 +365,25 @@
             cronometroSegundos++;
         }
 
+        // Función para crear las dianas
         function createTarget() {
             let x, y, size;
 
+            // Se genera una posición aleatoria para la diana, asegurándose de que no esté en áreas prohibidas
             do {
                 size = targetSize[Math.floor(Math.random() * targetSize.length)];
                 x = Math.random() * (window.innerWidth - size);
                 y = Math.random() * (window.innerHeight - size);
-            } while (isInsideUI(x, y, size)); // Verifica si está en las áreas prohibidas
+            } while (isInsideUI(x, y, size));
 
             const target = document.createElement('div');
             target.classList.add('target');
-            target.style.width = '0px'; // Empezar desde tamaño 0
-            target.style.height = '0px'; // Empezar desde tamaño 0
+            target.style.width = '0px'; // Comienza desde tamaño 0
+            target.style.height = '0px'; // Comienza desde tamaño 0
             target.style.left = `${x}px`;
             target.style.top = `${y}px`;
 
+            // Añadir los anillos de la diana
             const ring1 = document.createElement('div');
             ring1.classList.add('ring1');
 
@@ -313,52 +397,55 @@
             ring3.appendChild(ring2);
             target.appendChild(ring3);
 
+            // Evento que se dispara al hacer clic en una diana
             target.addEventListener('click', () => {
-                score++; // Incrementa el contador de aciertos
-                scoreDisplay.textContent = `Aciertos: ${score}`; // Actualiza el contador en pantalla
-                target.remove(); // Elimina la diana clickeada
+                score++; // Aumenta el contador de aciertos
+                scoreDisplay.textContent = `Aciertos: ${score}`; // Actualiza la pantalla
+                target.remove(); // Elimina la diana
 
-                // Disminuir el intervalo hasta un mínimo de 500 ms
+                // Reduce el intervalo de aparición de dianas hasta un mínimo
                 if (targetInterval > 500) {
-                    targetInterval -= 200; // Reducir en 100ms cada vez que aciertas
+                    targetInterval -= 200; // Reducir el intervalo
                     clearInterval(gameInterval); // Limpiar el intervalo actual
-                    gameInterval = setInterval(createTarget, targetInterval); // Iniciar uno nuevo con el intervalo actualizado
+                    gameInterval = setInterval(createTarget, targetInterval); // Reiniciar con el nuevo intervalo
                 }
             });
-            game.appendChild(target);
-            totalTargets++; // Incrementar el total de dianas creadas
 
-            // Animar el crecimiento del objetivo desde el centro
+            game.appendChild(target);
+            totalTargets++; // Incrementar el número total de dianas creadas
+
+            // Animar el crecimiento de la diana
             animateTargetGrowth(target, 0, size, x + size / 2, y + size / 2);
 
+            // Si no se hace clic en la diana en 3 segundos, perder una vida
             setTimeout(() => {
                 if (document.body.contains(target)) {
                     target.remove();
-                    loseLife(); // Si no se hace clic en la diana, pierdes una vida
+                    loseLife(); // Perder una vida si no se hace clic
                 }
-            }, 3000); // Tiempo total antes de desaparecer si no se clickea
+            }, 3000);
         }
 
+        // Función para animar el crecimiento de la diana
         function animateTargetGrowth(target, size, maxSize, initialX, initialY) {
             let currentSize = 0;
-            target.dataset.maxSize = maxSize; // Almacenar el tamaño máximo de la diana
+            target.dataset.maxSize = maxSize;
 
             function grow() {
-                currentSize += 1; // Velocidad de crecimiento ajustada
+                currentSize += 1; // Incrementa el tamaño gradualmente
                 target.style.width = `${currentSize}px`;
                 target.style.height = `${currentSize}px`;
 
-                // Ajustar la posición para que el crecimiento sea desde el centro
+                // Ajusta la posición para mantener el crecimiento centrado
                 target.style.left = `${initialX - currentSize / 2}px`;
                 target.style.top = `${initialY - currentSize / 2}px`;
 
                 if (currentSize < maxSize) {
                     requestAnimationFrame(grow);
                 } else {
-                    // Si el objetivo llega al tamaño máximo sin ser clickeado, eliminarlo
                     if (document.body.contains(target)) {
                         target.remove();
-                        loseLife(); // Perder una vida si no se hace clic
+                        loseLife(); // Si el objetivo no se clickea, perder una vida
                     }
                 }
             }
@@ -366,12 +453,12 @@
             grow();
         }
 
+        // Verifica si la diana está dentro del área del cronómetro o botones
         function isInsideUI(x, y, size) {
             const timerRect = document.getElementById('timer').getBoundingClientRect();
             const livesRect = document.getElementById('lives').getBoundingClientRect();
             const linksRect = document.querySelector('.links').getBoundingClientRect();
 
-            // Verificar si la diana está dentro del área del cronómetro
             if (
                 x < timerRect.right &&
                 x + size > timerRect.left &&
@@ -381,7 +468,6 @@
                 return true;
             }
 
-            // Verificar si la diana está dentro del área de los corazones
             if (
                 x < livesRect.right &&
                 x + size > livesRect.left &&
@@ -391,7 +477,6 @@
                 return true;
             }
 
-            // Verificar si la diana está dentro del área de los botones "Salir" y "Pausar"
             if (
                 x < linksRect.right &&
                 x + size > linksRect.left &&
@@ -401,133 +486,110 @@
                 return true;
             }
 
-            return false; // Si no está en ninguna área prohibida
+            return false;
         }
 
+        // Función para perder una vida
         function loseLife() {
             lives--; // Restar una vida
-            updateLivesDisplay(); // Actualizar el display de corazones
+            updateLivesDisplay(); // Actualizar el display de vidas
             if (lives <= 0 && !gameOver) {
-                endGame(); // Si te quedas sin vidas, termina el juego
+                endGame(); // Terminar el juego si no quedan vidas
             }
         }
 
+        // Actualiza la visualización de las vidas
         function updateLivesDisplay() {
-            // Actualizar la cantidad de corazones visibles según las vidas restantes
             const hearts = livesDisplay.querySelectorAll('.heart');
             hearts.forEach((heart, index) => {
                 if (index >= lives) {
-                    heart.style.visibility = 'hidden';
+                    heart.style.visibility = 'hidden'; // Esconde los corazones si quedan menos vidas
                 } else {
-                    heart.style.visibility = 'visible';
+                    heart.style.visibility = 'visible'; // Muestra los corazones activos
                 }
             });
         }
 
+        // Iniciar el juego
         function startGame() {
             gameOver = false;
             startButton.style.display = 'none'; // Ocultar el botón de inicio
             timerDisplay.style.display = 'block'; // Mostrar el cronómetro
             cronometroSegundos = 0; // Reiniciar el cronómetro
             score = 0; // Reiniciar el contador de aciertos
-            totalTargets = 0; // Reiniciar el total de dianas creadas
+            totalTargets = 0; // Reiniciar el número de dianas
             lives = 3; // Reiniciar las vidas
-            scoreDisplay.textContent = `Aciertos: ${score}`; // Mostrar aciertos reiniciados
-            updateLivesDisplay(); // Mostrar vidas reiniciadas
-            difucultades();
+            scoreDisplay.textContent = `Aciertos: ${score}`;
+            updateLivesDisplay(); // Reiniciar el display de vidas
+            difucultades(); // Enviar la dificultad
 
-            // Iniciar la creación de dianas con un solo intervalo
+            // Iniciar el intervalo de creación de dianas
             gameInterval = setInterval(createTarget, targetInterval);
 
             // Iniciar el cronómetro
-            timerInterval = setInterval(updateCronometro, 1000); // Actualiza cada segundo
+            timerInterval = setInterval(updateCronometro, 1000); // Actualizar cada segundo
         }
 
+        // Terminar el juego
         function endGame() {
-            if (gameOver) return;  // Salir si el juego ya ha terminado
+            if (gameOver) return;
 
             gameOver = true;
-            clearInterval(gameInterval);
-            clearInterval(timerInterval);
+            clearInterval(gameInterval); // Detener la creación de dianas
+            clearInterval(timerInterval); // Detener el cronómetro
 
-            // Calcular precisión
+            // Calcular precisión y tiempo jugado
             let precision = ((score / totalTargets) * 100).toFixed(2);
-
-            // Calcular el tiempo total jugado (basado en cronómetro)
             let tiempoJugado = cronometroSegundos;
 
-            // Mostrar el mensaje final con aciertos, tiempo y precisión
+            // Mostrar los resultados en el modal
             finalScoreText.innerHTML = `El juego ha terminado<br>
                                 Aciertos: ${score}<br>
                                 Tiempo: ${tiempoJugado} segundos<br>
                                 Precisión: ${precision}%`;
-            endGameModal.style.display = "block"; // Mostrar modal
+            endGameModal.style.display = "block"; // Mostrar el modal al terminar el juego
 
-            // Enviar resultados al servidor
+            // Enviar los resultados al servidor
             enviarResultados(score, tiempoJugado, precision);
         }
 
+        // Reiniciar el juego
         restartButton.addEventListener('click', () => {
-            window.location.reload(); // Recargar la página al hacer clic en "Reiniciar"
+            window.location.reload(); // Recargar la página para reiniciar
         });
 
-        // Evento para iniciar el juego cuando se presiona el botón
+        // Iniciar el juego cuando se presiona el botón de inicio
         startButton.addEventListener('click', startGame);
 
-        let isPaused = false; // Añadir estado de pausa
+        let isPaused = false; // Estado de pausa
 
+        // Alternar entre pausa y reanudar
         function togglePause() {
             if (isPaused) {
                 pauseButton.textContent = 'Pausar';
-                resumeGame();
+                resumeGame(); // Reanudar
             } else {
                 pauseButton.textContent = 'Reanudar';
-                pauseGame();
+                pauseGame(); // Pausar
             }
-            isPaused = !isPaused;
+            isPaused = !isPaused; // Alternar el estado
         }
 
+        // Pausar el juego
         function pauseGame() {
             clearInterval(timerInterval); // Detener el cronómetro
-            clearInterval(gameInterval);  // Detener la aparición de nuevas dianas
-
-            // Detener la desaparición de dianas existentes (deja de contar el tiempo para su eliminación)
-            const targets = document.querySelectorAll('.target');
-            targets.forEach(target => {
-                // Si la diana aún no ha alcanzado su tamaño completo, la eliminamos
-                if (parseInt(target.style.width) < parseInt(target.dataset.maxSize)) {
-                    target.remove(); // Eliminar diana en proceso de crecimiento
-                } else {
-                    target.style.visibility = 'visible'; // Mantener visibles las dianas completas
-                    target.dataset.paused = true; // Marcar las dianas como pausadas
-                }
-            });
+            clearInterval(gameInterval); // Detener las dianas
         }
 
+        // Reanudar el juego
         function resumeGame() {
-            // Reanudar el cronómetro
-            timerInterval = setInterval(updateCronometro, 1000); // Actualiza cada segundo
-
-            // Reanudar la creación de nuevas dianas
-            gameInterval = setInterval(createTarget, targetInterval);
-
-            // Reanudar las dianas existentes (permitir que desaparezcan después del tiempo normal)
-            const targets = document.querySelectorAll('.target');
-            targets.forEach(target => {
-                if (target.dataset.paused === "true") {
-                    setTimeout(() => {
-                        if (document.body.contains(target)) {
-                            target.remove();
-                            loseLife(); // Solo perder una vida si no se ha hecho clic en la diana
-                        }
-                    }, 3000); // Permitir que desaparezcan después de 3 segundos
-                    delete target.dataset.paused; // Eliminar la marca de pausa
-                }
-            });
+            timerInterval = setInterval(updateCronometro, 1000); // Reanudar el cronómetro
+            gameInterval = setInterval(createTarget, targetInterval); // Reanudar la creación de dianas
         }
 
-        pauseButton.addEventListener('click', togglePause);
+        pauseButton.addEventListener('click', togglePause); // Evento de clic en el botón de pausa
 
+        // Enviar los resultados al servidor
         function enviarResultados(aciertos, tiempo, precision) {
             fetch('http://127.0.0.1:5000/guardar_resultados', {
                 method: 'POST',
@@ -551,17 +613,18 @@
                     alert('Hubo un problema al guardar los resultados: ' + error.message);
                 });
         }
-        function difucultades(aciertos, tiempo, precision) {
-            // Enviar la dificultad al servidor Flask
+
+        // Enviar la dificultad al servidor
+        function difucultades() {
             fetch('/guardar_dificultad', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    nombre: 'Reto',  // Nombre del juego
-                    descripcion: 'Juego de Reto',  // Descripción del juego
-                    dificultad: 'Medio'  // Dificultad asignada
+                    nombre: 'Reto', // Nombre del juego
+                    descripcion: 'Juego de Reto', // Descripción del juego
+                    dificultad: 'Medio' // Dificultad asignada
                 })
             })
                 .then(response => {

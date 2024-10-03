@@ -1,148 +1,241 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- Se define el tipo de documento como HTML5 y se establece el idioma de la página como español -->
 
 <head>
     <meta charset="UTF-8">
+    <!-- Se define la codificación de caracteres como UTF-8, compatible con múltiples lenguajes y caracteres especiales -->
+
     <title>Aim Trainer</title>
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
+
     <link rel="stylesheet" type="text/css" href="slide navbar style.css">
+    <!-- Se incluye un archivo externo de CSS llamado 'slide navbar style.css' para los estilos adicionales -->
+
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+    <!-- Se importa la fuente 'Jost' desde Google Fonts para ser usada en la página -->
+
     <style>
+        /* Estilos CSS definidos dentro del archivo HTML */
+
         body {
             margin: 0;
+            /* Elimina los márgenes del cuerpo */
             padding: 0;
+            /* Elimina el padding del cuerpo */
             display: flex;
+            /* Hace que el cuerpo sea un contenedor flexible */
             justify-content: center;
+            /* Centra el contenido horizontalmente */
             align-items: center;
+            /* Centra el contenido verticalmente */
             min-height: 100vh;
+            /* La altura mínima de la página es el 100% del alto de la ventana */
             font-family: 'Jost', sans-serif;
+            /* Se establece la fuente Jost para todo el cuerpo */
             background: linear-gradient(to bottom, rgb(5, 3, 26), #0f2d3e, #01466e);
+            /* Se define un fondo degradado desde un color oscuro hasta un azul */
         }
 
         .main {
             width: 350px;
+            /* Ancho de 350px para el contenedor principal */
             height: 500px;
+            /* Altura de 500px */
             background: red;
+            /* Fondo rojo (aunque se sobrescribe por la imagen de fondo) */
             overflow: hidden;
-            background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
+            /* Oculta el contenido desbordado */
+            background: url("...") no-repeat center/cover;
+            /* Imagen de fondo con posición centrada y ajustada a cubrir todo el contenedor */
             border-radius: 10px;
+            /* Bordes redondeados del contenedor principal */
             box-shadow: 5px 20px 50px #000;
+            /* Sombra del contenedor con color negro y difuminado */
         }
 
         #chk {
             display: none;
+            /* Checkbox invisible, utilizado para alternar entre registro e ingreso */
         }
 
         .signup {
             position: relative;
+            /* Posición relativa para el formulario de registro */
             width: 100%;
+            /* Ocupa el 100% del ancho del contenedor principal */
             height: 100%;
+            /* Ocupa el 100% del alto del contenedor principal */
         }
 
         label {
             color: #fff;
+            /* Color de texto blanco */
             font-size: 2.3em;
+            /* Tamaño de fuente grande para las etiquetas */
             justify-content: center;
+            /* Alineación del texto al centro */
             display: flex;
+            /* Utiliza flexbox para centrar el texto */
             margin: 50px;
+            /* Margen alrededor del texto */
             font-weight: bold;
+            /* Texto en negrita */
             cursor: pointer;
+            /* El cursor cambia a pointer para indicar que es clicable */
             transition: .5s ease-in-out;
+            /* Transición suave para transformaciones de las etiquetas */
         }
 
         input {
             width: 60%;
+            /* Los campos de entrada ocupan el 60% del ancho del contenedor */
             height: 10px;
+            /* Altura inicial de los campos de entrada */
             background: #e0dede;
+            /* Color de fondo gris claro para los campos */
             justify-content: center;
             display: flex;
             margin: 20px auto;
+            /* Margen automático para centrar los campos de entrada */
             padding: 12px;
+            /* Padding interno de 12px */
             border: none;
+            /* Sin borde */
             outline: none;
+            /* Elimina el contorno del campo de entrada al enfocarse */
             border-radius: 5px;
+            /* Bordes redondeados para los campos de entrada */
         }
 
         button {
             width: 60%;
+            /* Los botones ocupan el 60% del ancho del contenedor */
             height: 40px;
+            /* Altura de los botones */
             margin: 10px auto;
+            /* Margen para centrar el botón */
             justify-content: center;
             display: block;
             color: #fff;
+            /* Texto en blanco */
             background: #1e81be;
+            /* Fondo azul para los botones */
             font-size: 1em;
+            /* Tamaño de fuente estándar */
             font-weight: bold;
+            /* Negrita para el texto del botón */
             margin-top: 30px;
+            /* Margen superior adicional */
             outline: none;
+            /* Elimina el contorno del botón al enfocarse */
             border: none;
+            /* Sin borde en los botones */
             border-radius: 5px;
+            /* Bordes redondeados */
             transition: .2s ease-in;
+            /* Transición suave para cambios de estilo en los botones */
             cursor: pointer;
+            /* Cambia el cursor a pointer cuando se pasa por encima del botón */
         }
 
         button:hover {
             background: #0f2d3e;
+            /* Cambia el fondo del botón al pasar el cursor sobre él */
         }
 
         .login {
             height: 460px;
+            /* Altura del contenedor de login */
             background: #eee;
+            /* Fondo gris claro para el formulario de ingreso */
             border-radius: 60% / 10%;
+            /* Bordes redondeados específicos para darle un estilo único */
             transform: translateY(-180px);
+            /* Mueve el formulario de login hacia arriba 180px */
             transition: .8s ease-in-out;
+            /* Transición suave para transformaciones */
         }
 
         .login label {
             color: #0f2d3e;
+            /* Color de texto azul oscuro para las etiquetas del login */
             transform: scale(.6);
+            /* Reduce el tamaño de las etiquetas en login */
         }
 
         #chk:checked~.login {
             transform: translateY(-500px);
+            /* Si el checkbox está marcado, el formulario de login se mueve hacia arriba (fuera de vista) */
         }
 
         #chk:checked~.login label {
             transform: scale(1);
+            /* Si el checkbox está marcado, el tamaño de la etiqueta en login vuelve a su tamaño original */
         }
 
         #chk:checked~.signup label {
             transform: scale(.6);
+            /* Si el checkbox está marcado, el tamaño de la etiqueta en registro se reduce */
         }
 
-        #title{
+        #title {
             color: white;
+            /* Color del título en blanco */
             position: absolute;
+            /* Posiciona el título de manera absoluta */
             top: 2%;
+            /* El título se coloca en el 2% superior de la página */
             justify-content: center;
+            /* Centra el texto del título horizontalmente */
             font-size: 80px;
+            /* Tamaño grande para el título */
         }
     </style>
+</head>
 
 <body>
     <h1 id="title">
         AIM TRAINER
     </h1>
+    <!-- Título principal de la página -->
 
     <div class="main">
+        <!-- Contenedor principal que alberga los formularios de registro e ingreso -->
         <input type="checkbox" id="chk" aria-hidden="true">
+        <!-- Checkbox oculto que controla la animación entre formularios de registro e ingreso -->
 
         <div class="signup">
+            <!-- Contenedor para el formulario de registro -->
             <form action="http://127.0.0.1:5000/register" method="POST">
+                <!-- Formulario para registrar un usuario, enviando los datos a una API local -->
                 <label for="chk" aria-hidden="true">Registrarse</label>
+                <!-- Etiqueta para el formulario de registro -->
                 <input type="text" name="usuario" placeholder="Usuario" required="">
+                <!-- Campo de entrada para el nombre de usuario -->
                 <input type="email" name="email" placeholder="Email" required="">
+                <!-- Campo de entrada para el email del usuario -->
                 <input type="password" name="pswd" placeholder="Contraseña" required="">
+                <!-- Campo de entrada para la contraseña del usuario -->
                 <input type="number" name="edad" placeholder="Edad" required="">
+                <!-- Campo de entrada para la edad del usuario -->
                 <button type="submit">Registrarse</button>
-            </form>            
+                <!-- Botón de envío para el formulario de registro -->
+            </form>
         </div>
 
         <div class="login">
+            <!-- Contenedor para el formulario de ingreso -->
             <form action="http://127.0.0.1:5000/login" method="POST">
+                <!-- Formulario para ingresar un usuario, enviando los datos a una API local -->
                 <label for="chk" aria-hidden="true">Ingresar</label>
+                <!-- Etiqueta para el formulario de ingreso -->
                 <input type="text" name="usuario" placeholder="Usuario" required="">
+                <!-- Campo de entrada para el nombre de usuario -->
                 <input type="password" name="pswd" placeholder="Contraseña" required="">
+                <!-- Campo de entrada para la contraseña del usuario -->
                 <button type="submit">Ingresar</button>
+                <!-- Botón de envío para el formulario de ingreso -->
             </form>
         </div>
     </div>

@@ -1,160 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Se define el tipo de documento como HTML5 -->
 
 <head>
     <meta charset="UTF-8">
+    <!-- Se establece la codificación de caracteres como UTF-8 para soportar múltiples lenguajes -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Configura la ventana gráfica para mejorar la visualización en dispositivos móviles -->
+
     <title>CRUD Usuarios</title>
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
+
     <style>
+        /* Estilos CSS para la página */
         body {
             font-family: 'Arial', sans-serif;
+            /* Fuente del contenido */
             background-color: #f4f4f4;
+            /* Color de fondo de la página */
             margin: 0;
             padding: 20px;
+            /* Espaciado interno alrededor del contenido */
         }
 
         h1 {
             text-align: center;
+            /* Alinea el título al centro */
             margin-bottom: 20px;
+            /* Espaciado inferior */
         }
 
         table {
             width: 100%;
+            /* La tabla ocupa el 100% del ancho del contenedor */
             border-collapse: collapse;
+            /* Elimina el espacio entre bordes de las celdas */
             margin-bottom: 20px;
+            /* Margen inferior para separar la tabla de otros elementos */
         }
 
         table,
         th,
         td {
             border: 1px solid #ddd;
+            /* Aplica un borde a la tabla, celdas y cabeceras */
         }
 
         th,
         td {
             padding: 12px;
+            /* Espaciado interno de las celdas */
             text-align: left;
+            /* Texto alineado a la izquierda */
         }
 
         th {
             background-color: #f2f2f2;
+            /* Color de fondo de las cabeceras de la tabla */
         }
 
         tr:nth-child(even) {
             background-color: #f9f9f9;
+            /* Color de fondo para filas pares de la tabla */
         }
 
         tr:hover {
             background-color: #f1f1f1;
+            /* Color de fondo al pasar el cursor por una fila */
         }
 
         .btn {
             padding: 10px 15px;
+            /* Tamaño del botón */
             border: none;
+            /* Sin borde */
             cursor: pointer;
+            /* Indica que es un elemento clicable */
             font-size: 14px;
             border-radius: 5px;
+            /* Esquinas redondeadas */
         }
 
         .btn-edit {
             background-color: #ffc107;
+            /* Color de fondo para el botón de editar */
             color: white;
+            /* Color de texto */
         }
 
         .btn-delete {
             background-color: #dc3545;
+            /* Color de fondo para el botón de eliminar */
             color: white;
         }
 
         .btn-edit:hover {
             background-color: #e0a800;
+            /* Color de fondo al pasar el cursor por el botón de editar */
         }
 
         .btn-delete:hover {
             background-color: #c82333;
+            /* Color de fondo al pasar el cursor por el botón de eliminar */
         }
 
         .actions {
             display: flex;
             gap: 10px;
+            /* Espaciado entre botones en una fila */
         }
 
         .btn-add,
         .btn-csv {
             background-color: #28a745;
+            /* Color de fondo para botones de agregar */
             color: white;
             padding: 10px 20px;
+            /* Tamaño del botón */
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             margin-right: 10px;
+            /* Margen derecho */
         }
 
         .btn-csv {
             background-color: #007bff;
+            /* Color específico para el botón CSV */
         }
 
         .btn-add:hover {
             background-color: #218838;
+            /* Color de fondo al pasar el cursor por el botón agregar */
         }
 
         .btn-csv:hover {
             background-color: #0069d9;
+            /* Color de fondo al pasar el cursor por el botón CSV */
         }
 
         .controls {
             display: flex;
             justify-content: flex-start;
+            /* Alinea el contenido al inicio (izquierda) */
             margin-bottom: 20px;
         }
 
         .btn-confirm {
             background-color: #28a745;
-            /* Verde */
+            /* Verde para el botón de confirmar */
             color: white;
         }
 
         .btn-confirm:hover {
             background-color: #218838;
+            /* Cambio de color en hover para el botón confirmar */
         }
     </style>
 </head>
 
 <body>
     <h1>CRUD Usuarios</h1>
+    <!-- Título principal de la página -->
 
     <div class="controls">
+        <!-- Contenedor de controles para botones de agregar o importar usuarios (actualmente vacío) -->
     </div>
 
     <table>
+        <!-- Tabla para mostrar la lista de usuarios -->
         <thead>
+            <!-- Cabecera de la tabla -->
             <tr>
                 <th>ID</th>
+                <!-- Columna de ID -->
                 <th>Usuario</th>
+                <!-- Columna de Usuario -->
                 <th>Email</th>
+                <!-- Columna de Email -->
                 <th>Edad</th>
+                <!-- Columna de Edad -->
                 <th>Acciones</th>
+                <!-- Columna de Acciones (editar/eliminar) -->
             </tr>
         </thead>
         <tbody>
+            <!-- Cuerpo de la tabla que contendrá los usuarios -->
             {% for usuario in usuarios %}
+            <!-- Iteración sobre los usuarios utilizando una plantilla server-side (e.g., Jinja2) -->
             <tr>
-                <td>{{ usuario[0] }}</td> <!-- ID (No editable) -->
+                <td>{{ usuario[0] }}</td>
+                <!-- Muestra el ID del usuario (no editable) -->
                 <td contenteditable="false" id="usuario-{{ usuario[0] }}">{{ usuario[1] }}</td>
-                <!-- Usuario editable -->
-                <td contenteditable="false" id="email-{{ usuario[0] }}">{{ usuario[2] }}</td> <!-- Email editable -->
-                <td contenteditable="false" id="edad-{{ usuario[0] }}">{{ usuario[3] }}</td> <!-- Edad editable -->
+                <!-- Muestra el nombre del usuario (editable al activar edición) -->
+                <td contenteditable="false" id="email-{{ usuario[0] }}">{{ usuario[2] }}</td>
+                <!-- Muestra el email del usuario (editable al activar edición) -->
+                <td contenteditable="false" id="edad-{{ usuario[0] }}">{{ usuario[3] }}</td>
+                <!-- Muestra la edad del usuario (editable al activar edición) -->
                 <td class="actions">
+                    <!-- Columna de acciones con botones para editar y eliminar -->
                     <button class="btn btn-edit" onclick="habilitarEdicion({{ usuario[0] }})">Editar</button>
+                    <!-- Botón de editar que habilita la edición para ese usuario -->
                     <button class="btn btn-delete" onclick="eliminarUsuario({{ usuario[0] }})">Eliminar</button>
+                    <!-- Botón de eliminar que llama a la función para eliminar al usuario -->
                 </td>
             </tr>
             {% endfor %}
+            <!-- Fin del bucle que genera filas por cada usuario -->
         </tbody>
     </table>
 
     <script>
+        // Función para habilitar la edición de un usuario
         function habilitarEdicion(idUsuario) {
             // Hacer las celdas de usuario, email y edad editables
             document.getElementById(`usuario-${idUsuario}`).setAttribute('contenteditable', 'true');
@@ -167,56 +226,63 @@
             boton.classList.remove("btn-edit");
             boton.classList.add("btn-confirm");
             boton.setAttribute("onclick", `confirmarEdicion(${idUsuario})`);
+            // Cambia el evento onclick para que ahora confirme la edición
         }
 
+        // Función para eliminar un usuario
         function eliminarUsuario(idUsuario) {
             if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+                // Solicita confirmación del usuario antes de eliminar
                 fetch(`/usuarios/delete/${idUsuario}`, {
+                    // Envía una solicitud POST para eliminar el usuario
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     }
                 }).then(response => {
                     if (response.ok) {
-                        // Eliminar la fila del DOM en tiempo real
+                        // Si la respuesta es exitosa, elimina la fila de la tabla
                         const fila = document.getElementById(`fila-${idUsuario}`);
                         if (fila) {
-                            fila.remove();  // Remueve la fila correspondiente al usuario eliminado
+                            fila.remove();  // Remueve la fila del usuario eliminado
                         }
                     } else {
+                        // Si falla, muestra un mensaje de error
                         response.json().then(data => {
                             alert("Error al eliminar el usuario: " + data.error);
                         });
                     }
                 }).catch(error => {
+                    // Maneja errores de la solicitud
                     console.error("Error al intentar eliminar el usuario:", error);
                     alert("Ocurrió un error al eliminar el usuario.");
                 });
             }
         }
 
+        // Función para confirmar la edición de un usuario
         function confirmarEdicion(idUsuario) {
             // Obtener los nuevos valores de las celdas editadas
             const nuevoUsuario = document.getElementById(`usuario-${idUsuario}`).innerText;
             const nuevoEmail = document.getElementById(`email-${idUsuario}`).innerText;
             const nuevaEdad = document.getElementById(`edad-${idUsuario}`).innerText;
 
-            // Verificar si los valores no están vacíos o incorrectos
+            // Verificar si los valores no están vacíos
             if (!nuevoUsuario || !nuevoEmail || !nuevaEdad) {
                 alert("Los campos no pueden estar vacíos.");
                 return;
             }
 
-            // Hacer una petición AJAX para actualizar los datos en el servidor
+            // Hacer una petición para actualizar los datos en el servidor
             fetch(`/usuarios/update/${idUsuario}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    usuario: nuevoUsuario,  // Asegúrate de que no falta coma aquí
-                    email: nuevoEmail,      // Asegúrate de que no falta coma aquí
-                    edad: nuevaEdad         // Correcta asignación
+                    usuario: nuevoUsuario,
+                    email: nuevoEmail,
+                    edad: nuevaEdad
                 })
             }).then(response => {
                 if (response.ok) {
@@ -232,9 +298,11 @@
                     boton.classList.add("btn-edit");
                     boton.setAttribute("onclick", `habilitarEdicion(${idUsuario})`);
                 } else {
+                    // Mostrar un mensaje si ocurre un error al actualizar
                     alert("Error al actualizar los datos");
                 }
             }).catch(error => {
+                // Maneja errores de la solicitud
                 console.error("Error:", error);
             });
         }

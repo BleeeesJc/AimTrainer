@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+<!-- Indica que el documento es HTML y está en español -->
 
 <head>
     <meta charset="UTF-8">
+    <!-- Establece el conjunto de caracteres a UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Hace que el sitio sea responsivo en dispositivos móviles -->
     <title>Aim Trainer</title>
+    <!-- Título de la página -->
 
     <!-- Cargar las fuentes Orbitron y Roboto desde Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap"
         rel="stylesheet">
+    <!-- Importa las fuentes Orbitron y Roboto -->
 
     <style>
         body {
@@ -17,6 +22,8 @@
             background-color: #0f2d3e;
             font-family: 'Roboto', sans-serif;
         }
+
+        /* Estilos para el cuerpo: sin margen, sin scroll, color de fondo y fuente */
 
         header {
             position: fixed;
@@ -31,12 +38,16 @@
             font-family: 'Orbitron', sans-serif;
         }
 
+        /* Estilos para el encabezado: posición fija arriba, fondo, color de texto, diseño flexible */
+
         #game {
             position: relative;
             width: 100vw;
             height: 100vh;
             background-color: #0f2d3e;
         }
+
+        /* Contenedor del juego: posición relativa y ocupa toda la pantalla */
 
         .target {
             position: absolute;
@@ -47,12 +58,16 @@
             align-items: center;
         }
 
+        /* Estilos para las dianas: posición absoluta, forma redonda, cursor de puntero */
+
         .ring1 {
             background-color: #f94144;
             border-radius: 50%;
             width: 20%;
             height: 20%;
         }
+
+        /* Primer anillo de la diana: color rojo, forma redonda, tamaño relativo */
 
         .ring2 {
             background-color: white;
@@ -64,6 +79,8 @@
             align-items: center;
         }
 
+        /* Segundo anillo de la diana: color blanco, centrado */
+
         .ring3 {
             background-color: #f94144;
             border-radius: 50%;
@@ -74,6 +91,8 @@
             align-items: center;
         }
 
+        /* Tercer anillo de la diana: color rojo, centrado */
+
         #timer,
         #score {
             font-family: 'Orbitron', sans-serif;
@@ -82,16 +101,22 @@
             color: white;
         }
 
+        /* Estilos para el temporizador y el puntaje: fuente, posición, tamaño y color */
+
         #timer {
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
         }
 
+        /* Ubicación del temporizador: centrado en la parte superior */
+
         #score {
             top: 20px;
             left: 20px;
         }
+
+        /* Ubicación del puntaje: arriba a la izquierda */
 
         #lives {
             position: absolute;
@@ -100,6 +125,8 @@
             display: flex;
             gap: 30px;
         }
+
+        /* Contenedor de vidas (corazones): posición y separación entre corazones */
 
         .heart {
             width: 30px;
@@ -111,6 +138,8 @@
             transform: rotate(-45deg);
         }
 
+        /* Estilos para cada corazón: tamaño, color y rotación para formar la forma de corazón */
+
         .heart::before,
         .heart::after {
             content: "";
@@ -119,6 +148,8 @@
             border-radius: 50%;
         }
 
+        /* Pseudo-elementos para crear la parte superior redondeada del corazón */
+
         .heart::before {
             width: 30px;
             height: 30px;
@@ -126,12 +157,16 @@
             left: 0;
         }
 
+        /* Mitad izquierda del corazón */
+
         .heart::after {
             width: 30px;
             height: 30px;
             left: 15px;
             top: 0;
         }
+
+        /* Mitad derecha del corazón */
 
         #levelButtons {
             position: absolute;
@@ -142,6 +177,8 @@
             justify-content: center;
             gap: 20px;
         }
+
+        /* Contenedor de los botones de nivel: centrado en la pantalla */
 
         #startButton {
             display: none;
@@ -159,9 +196,13 @@
             border-radius: 10px;
         }
 
+        /* Estilos para el botón de iniciar juego */
+
         #startButton:hover {
             background-color: #76710d;
         }
+
+        /* Efecto hover para el botón de iniciar */
 
         .levelButton {
             font-size: 20px;
@@ -173,13 +214,19 @@
             border-radius: 10px;
         }
 
+        /* Estilos para los botones de nivel */
+
         .levelButton:hover {
             background-color: #76710d;
         }
 
+        /* Efecto hover para los botones de nivel */
+
         .levelButton.selected {
             background-color: #f94144;
         }
+
+        /* Estilo para el botón de nivel seleccionado */
 
         .modal {
             display: none;
@@ -192,6 +239,8 @@
             background-color: rgba(0, 0, 0, 0.4);
         }
 
+        /* Estilos para el modal (pantalla de fin de juego): oculto inicialmente */
+
         .modal-content {
             background-color: white;
             margin: 15% auto;
@@ -203,6 +252,8 @@
             border-radius: 15px;
         }
 
+        /* Contenido del modal: centrado y estilizado */
+
         .modal button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -213,15 +264,21 @@
             border-radius: 10px;
         }
 
+        /* Estilos para el botón dentro del modal */
+
         .modal button:hover {
             background-color: #76710d;
         }
+
+        /* Efecto hover para el botón del modal */
 
         .links {
             position: absolute;
             top: 20px;
             right: 100px;
         }
+
+        /* Contenedor de enlaces: posición en la parte superior derecha */
 
         .links a {
             color: white;
@@ -230,9 +287,13 @@
             text-decoration: none;
         }
 
+        /* Estilos para los enlaces */
+
         .links a:hover {
             text-decoration: underline;
         }
+
+        /* Efecto hover para los enlaces */
 
         .links #pauseButton {
             color: white;
@@ -244,9 +305,13 @@
             margin-left: 20px;
         }
 
+        /* Estilos para el botón de pausa */
+
         .links #pauseButton:hover {
             text-decoration: underline;
         }
+
+        /* Efecto hover para el botón de pausa */
 
         #difficultyDisplay {
             position: fixed;
@@ -256,6 +321,8 @@
             font-size: 20px;
             font-family: 'Orbitron', sans-serif;
         }
+
+        /* Muestra la dificultad seleccionada en la parte inferior izquierda */
     </style>
 </head>
 
@@ -263,61 +330,112 @@
     <header>
 
         <div id="difficultyDisplay" style="display:none;">Dificultad: </div>
+        <!-- Muestra la dificultad seleccionada, oculto inicialmente -->
 
         <div id="timer" style="display:none;">60</div>
+        <!-- Temporizador del juego, oculto inicialmente -->
+
         <div id="score">Aciertos: 0</div>
+        <!-- Muestra los aciertos del jugador -->
+
         <div id="lives">
             <div class="heart"></div>
             <div class="heart"></div>
             <div class="heart"></div>
         </div>
-        <div class="links"><a href="form.html">Salir</a>
+        <!-- Muestra las vidas del jugador con corazones -->
+
+        <div class="links">
+            <a href="form.html">Salir</a>
+            <!-- Enlace para salir del juego -->
             <button id="pauseButton">Pausar</button>
+            <!-- Botón para pausar el juego -->
         </div>
     </header>
 
     <div id="game"></div>
+    <!-- Contenedor principal donde aparecerán las dianas -->
 
     <div id="levelButtons">
         <button id="easyButton" class="levelButton">Fácil</button>
         <button id="mediumButton" class="levelButton">Medio</button>
         <button id="hardButton" class="levelButton">Difícil</button>
     </div>
+    <!-- Botones para seleccionar el nivel de dificultad -->
 
     <button id="startButton">Iniciar Juego</button>
+    <!-- Botón para iniciar el juego, oculto hasta seleccionar dificultad -->
 
     <!-- Modal personalizado -->
     <div id="endGameModal" class="modal">
         <div class="modal-content">
             <p id="finalScore"></p>
+            <!-- Muestra el puntaje final -->
             <button id="restartButton">Reiniciar</button>
+            <!-- Botón para reiniciar el juego -->
         </div>
     </div>
 
     <script>
         let gameOver = false;
-        const game = document.getElementById('game');
-        const timerDisplay = document.getElementById('timer');
-        const scoreDisplay = document.getElementById('score');
-        const livesDisplay = document.getElementById('lives');
-        const startButton = document.getElementById('startButton');
-        const endGameModal = document.getElementById('endGameModal');
-        const finalScoreText = document.getElementById('finalScore');
-        const restartButton = document.getElementById('restartButton');
-        const levelButtons = document.getElementById('levelButtons');
-        const levelButtonElems = document.querySelectorAll('.levelButton');
+        // Variable que indica si el juego ha terminado
 
-        let timeLeft = 60; // Tiempo en segundos
+        const game = document.getElementById('game');
+        // Elemento del juego donde aparecen las dianas
+
+        const timerDisplay = document.getElementById('timer');
+        // Elemento que muestra el temporizador
+
+        const scoreDisplay = document.getElementById('score');
+        // Elemento que muestra el puntaje
+
+        const livesDisplay = document.getElementById('lives');
+        // Elemento que muestra las vidas
+
+        const startButton = document.getElementById('startButton');
+        // Botón para iniciar el juego
+
+        const endGameModal = document.getElementById('endGameModal');
+        // Modal que aparece al finalizar el juego
+
+        const finalScoreText = document.getElementById('finalScore');
+        // Elemento que muestra el puntaje final en el modal
+
+        const restartButton = document.getElementById('restartButton');
+        // Botón para reiniciar el juego desde el modal
+
+        const levelButtons = document.getElementById('levelButtons');
+        // Contenedor de los botones de nivel
+
+        const levelButtonElems = document.querySelectorAll('.levelButton');
+        // Selección de todos los botones de nivel
+
+        let timeLeft = 60;
+        // Tiempo restante del juego en segundos
+
         const targetSize = [80, 100, 120, 150];
+        // Tamaños posibles para las dianas
+
         let gameInterval, timerInterval;
+        // Variables para almacenar los intervalos del juego y del temporizador
+
         let score = 0;
+        // Puntuación inicial
+
         let totalTargets = 0;
+        // Total de dianas creadas
+
         let lives = 3;
-        let targetInterval = 1500; // Intervalo predeterminado
+        // Vidas iniciales del jugador
+
+        let targetInterval = 1500;
+        // Intervalo predeterminado para la aparición de dianas (en milisegundos)
 
         // Selección de nivel
         levelButtonElems.forEach(button => {
             button.addEventListener('click', () => {
+                // Evento al hacer clic en un botón de nivel
+
                 // Limpiar selección previa
                 levelButtonElems.forEach(btn => btn.classList.remove('selected'));
 
@@ -379,19 +497,23 @@
                 levelButtons.style.display = 'none';
             });
         });
+
         function createTarget() {
             let x, y, size;
 
             do {
                 size = targetSize[Math.floor(Math.random() * targetSize.length)];
+                // Selecciona un tamaño aleatorio para la diana
+
                 x = Math.random() * (window.innerWidth - size);
                 y = Math.random() * (window.innerHeight - size);
+                // Calcula posiciones aleatorias para la diana
             } while (isInsideUI(x, y, size)); // Verifica si está en las áreas prohibidas
 
             const target = document.createElement('div');
             target.classList.add('target');
-            target.style.width = '0px'; // Empezar desde tamaño 0
-            target.style.height = '0px'; // Empezar desde tamaño 0
+            target.style.width = '0px'; // Empieza desde tamaño 0
+            target.style.height = '0px'; // Empieza desde tamaño 0
             target.style.left = `${x}px`;
             target.style.top = `${y}px`;
 
@@ -407,6 +529,7 @@
             ring2.appendChild(ring1);
             ring3.appendChild(ring2);
             target.appendChild(ring3);
+            // Crea la estructura de anillos para la diana
 
             target.addEventListener('click', () => {
                 score++; // Incrementa el contador de aciertos
@@ -453,6 +576,7 @@
             }
 
             grow();
+            // Inicia la animación de crecimiento
         }
 
         function isInsideUI(x, y, size) {
@@ -528,7 +652,6 @@
             window.location.reload(); // Recargar la página al hacer clic en "Reiniciar"
         });
 
-
         // Evento para iniciar el juego cuando se presiona el botón
         startButton.addEventListener('click', startGame);
 
@@ -549,7 +672,7 @@
             clearInterval(timerInterval); // Detener el temporizador
             clearInterval(gameInterval);  // Detener la aparición de nuevas dianas
 
-            // Detener la desaparición de dianas existentes (deja de contar el tiempo para su eliminación)
+            // Detener la desaparición de dianas existentes
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
                 // Si la diana aún no ha alcanzado su tamaño completo, la eliminamos
@@ -576,7 +699,7 @@
             // Reanudar la creación de nuevas dianas
             gameInterval = setInterval(createTarget, targetInterval);
 
-            // Reanudar las dianas existentes (permitir que desaparezcan después del tiempo normal)
+            // Reanudar las dianas existentes
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
                 if (target.dataset.paused === "true") {
@@ -594,30 +717,54 @@
         pauseButton.addEventListener('click', togglePause);
 
         function enviarResultados(aciertos, tiempo, precision) {
+            // Esta función envía los resultados de "aciertos", "tiempo" y "precisión" al servidor.
+
             fetch('http://127.0.0.1:5000/guardar_resultados', {
+                // Se usa el método fetch para hacer una solicitud HTTP al servidor.
+                // Aquí se realiza una solicitud a la URL 'http://127.0.0.1:5000/guardar_resultados'.
+
                 method: 'POST',
+                // El método utilizado es POST, lo que significa que estamos enviando datos al servidor.
+
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
+                // Especifica los encabezados de la solicitud. Aquí se indica que los datos se enviarán en formato URL codificado.
+
                 body: new URLSearchParams({
                     'aciertos': aciertos,
                     'tiempo': tiempo,
                     'precision': precision
                 })
+                // El cuerpo de la solicitud contiene los datos que se enviarán al servidor.
+                // Los datos incluyen "aciertos", "tiempo" y "precisión", que se pasan como parámetros a la función.
+                // Estos valores se codifican en el formato de URL mediante `URLSearchParams`.
             })
+
                 .then(response => {
                     if (!response.ok) {
+                        // Si la respuesta no es exitosa (response.ok es false), se lanza un error.
                         throw new Error('Error al guardar los resultados: ' + response.status);
                     }
+                    // Si todo está bien, se muestra una alerta indicando que los resultados se guardaron correctamente.
                     alert('Resultados guardados exitosamente');
                 })
+
                 .catch(error => {
+                    // Si hay algún error en la solicitud o en el proceso de respuesta, se maneja en este bloque.
+
                     console.error('Error:', error);
+                    // Se imprime el error en la consola para ayudar con la depuración.
+
                     alert('Hubo un problema al guardar los resultados: ' + error.message);
+                    // Se muestra una alerta indicando que hubo un problema al guardar los resultados, especificando el mensaje de error.
                 });
         }
+
+
     </script>
 
 </body>
 
 </html>
+<!-- Fin del documento HTML -->

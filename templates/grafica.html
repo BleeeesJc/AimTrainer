@@ -1,125 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Se define el tipo de documento como HTML5 y se establece el idioma de la página como inglés -->
 
 <head>
     <meta charset="UTF-8">
+    <!-- Se define la codificación de caracteres como UTF-8 para soportar múltiples lenguajes -->
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Configura la vista para que la página sea responsive y se ajuste a dispositivos móviles -->
+
     <title>Dashboard en Tiempo Real</title>
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
+
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <!-- Se incluye la librería Plotly para generar gráficos dinámicos -->
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Se incluye la librería jQuery para facilitar la manipulación del DOM y realizar peticiones AJAX -->
 
     <style>
+        /* Estilos CSS definidos dentro del archivo HTML */
+
         body {
             margin: 0;
+            /* Elimina márgenes por defecto */
             padding: 20px;
+            /* Añade un padding de 20px alrededor del cuerpo */
             font-family: 'Jost', sans-serif;
+            /* Establece la fuente Jost para todo el cuerpo */
             background: linear-gradient(to bottom, rgb(5, 3, 26), #0f2d3e, #01466e);
+            /* Se define un fondo degradado de tonos oscuros */
             color: white;
+            /* Texto de color blanco */
         }
 
         #area_nres,
         #area_nombre {
             margin-bottom: 20px;
+            /* Espaciado inferior para los contenedores */
         }
 
         label {
             display: block;
+            /* Las etiquetas se muestran como bloques completos */
             margin-bottom: 5px;
+            /* Margen inferior para separar las etiquetas de otros elementos */
         }
 
         #nres_value {
             margin-left: 10px;
+            /* Margen izquierdo para el valor */
         }
 
         .container {
             margin-top: 40px;
+            /* Margen superior de 40px para separar los gráficos */
         }
 
         h1 {
             text-align: center;
+            /* El título se centra horizontalmente */
             margin-bottom: 40px;
+            /* Margen inferior para separar el título del contenido siguiente */
         }
 
         /* Estilos del botón */
         .btn-container {
             text-align: center;
+            /* Alinea el botón en el centro de su contenedor */
             margin-top: 20px;
+            /* Margen superior para separar el botón del contenido anterior */
         }
 
         button {
-            background-color: #4CAF50; /* Color del botón */
-            color: white; /* Color del texto */
-            padding: 15px 30px; /* Tamaño del botón (más grande) */
-            font-size: 18px; /* Tamaño del texto */
-            border: none; /* Sin bordes */
-            border-radius: 25px; /* Bordes redondeados */
-            cursor: pointer; /* Manito al pasar sobre el botón */
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Sombra */
-            transition: transform 0.2s ease; /* Transición suave */
+            background-color: #4CAF50;
+            /* Color de fondo verde del botón */
+            color: white;
+            /* Texto de color blanco */
+            padding: 15px 30px;
+            /* Tamaño del botón (más grande) */
+            font-size: 18px;
+            /* Tamaño de fuente del botón */
+            border: none;
+            /* Sin bordes */
+            border-radius: 25px;
+            /* Bordes redondeados */
+            cursor: pointer;
+            /* Cambia el cursor al pasar sobre el botón */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            /* Sombra para el botón */
+            transition: transform 0.2s ease;
+            /* Transición suave para el efecto de hover */
         }
 
-        /* Efecto de hover (al pasar el ratón por encima) */
+        /* Efecto al pasar el ratón por encima del botón */
         button:hover {
-            background-color: #45a049; /* Cambia de color cuando se pasa el mouse */
-            transform: scale(1.05); /* Agranda ligeramente el botón */
+            background-color: #45a049;
+            /* Cambia a un tono de verde más oscuro */
+            transform: scale(1.05);
+            /* Aumenta ligeramente el tamaño del botón */
         }
 
-        /* Efecto de click (al hacer clic en el botón) */
+        /* Efecto al hacer clic en el botón */
         button:active {
-            transform: scale(0.98); /* Reduce ligeramente el tamaño al hacer clic */
+            transform: scale(0.98);
+            /* Reduce ligeramente el tamaño cuando se hace clic */
         }
     </style>
 </head>
 
 <body>
     <h1>Estadísticas de Aim Trainer</h1>
+    <!-- Título principal del dashboard -->
+
     <h2>Gráficas Generales</h2>
+    <!-- Subtítulo para las gráficas generales -->
 
     <div class="container" id="container-graficas-globales">
+        <!-- Contenedor para las gráficas generales -->
         <div id="grafico1" style="width:100%;height:600px;"></div>
+        <!-- Primer gráfico (ocupa todo el ancho y 600px de altura) -->
         <div id="grafico2" style="width:100%;height:600px; margin-top: 20px;"></div>
+        <!-- Segundo gráfico con margen superior de 20px -->
     </div>
 
     <h2>Gráficas Por Usuarios</h2>
+    <!-- Subtítulo para las gráficas por usuarios -->
 
     <div id="area_nombre">
+        <!-- Contenedor para el área de selección de nombre de usuario -->
         <label id="lbl-nombre">Nombre:</label>
-        <input type="text" id="nombre" minlength="1" placeholder="Nombre de usuario"
-            oninput="actualizarUsuario(this.value)">
+        <!-- Etiqueta para el campo de texto del nombre -->
+        <input type="text" id="nombre" minlength="1" placeholder="Nombre de usuario" oninput="actualizarUsuario(this.value)">
+        <!-- Campo de texto para ingresar el nombre de usuario. Al cambiar el valor, llama a la función actualizarUsuario -->
     </div>
 
     <div class="container" id="container-graficas-usuarios">
+        <!-- Contenedor para las gráficas por usuario -->
         <div id="grafico3" style="width:100%;height:600px;"></div>
+        <!-- Tercer gráfico (por usuario) -->
         <div id="grafico4" style="width:100%;height:600px; margin-top: 20px;"></div>
+        <!-- Cuarto gráfico con margen superior de 20px -->
         <div id="grafico5" style="width:100%;height:600px; margin-top: 20px;"></div>
+        <!-- Quinto gráfico con margen superior de 20px -->
     </div>
 
     <div class="btn-container">
+        <!-- Contenedor para el botón de descarga -->
         <h1>Descargar Resultados de Jugadores</h1>
-        <!-- Botón para descargar el archivo CSV -->
+        <!-- Título para el área de descarga -->
         <a href="/descargar_csv" download="resultados_jugadores.csv">
+            <!-- Enlace para descargar un archivo CSV con los resultados de los jugadores -->
             <button>Descargar CSV</button>
+            <!-- Botón para descargar el archivo -->
         </a>
     </div>
 
     <script>
 
         function actualizarUsuario(valor) {
+            // Función que se llama cuando se actualiza el nombre del usuario en el campo de texto
             document.getElementById('nombre').innerHTML = valor;
+            // Actualiza el contenido del elemento 'nombre' con el valor ingresado
+
             actualizarGrafico3(valor);
+            // Llama a la función para actualizar el gráfico 3 (gráfico del usuario)
             actualizarGrafico4(valor);
+            // Llama a la función para actualizar el gráfico 4
             actualizarGrafico5(valor);
+            // Llama a la función para actualizar el gráfico 5
         }
 
-        // Función para actualizar el gráfico en base al nres_inicio seleccionado
+        // Función para actualizar el primer gráfico (presión vs edad)
         function actualizarGrafico1() {
             $.getJSON(`/grafico_pres_vs_edad?`, function (data) {
+                // Se hace una solicitud AJAX para obtener los datos del gráfico en formato JSON
                 var grafico = document.getElementById('grafico1');
+                // Se selecciona el contenedor del gráfico 1
                 var parsedData = JSON.parse(data);
+                // Los datos obtenidos se parsean (de JSON a objeto JavaScript)
                 Plotly.react(grafico, parsedData.data, parsedData.layout);
+                // Se actualiza el gráfico utilizando Plotly con los datos y el layout
             });
         }
 
+        // Función para actualizar el segundo gráfico (aciertos vs edad)
         function actualizarGrafico2() {
             $.getJSON(`/grafico_aciertos_vs_edad`, function (data) {
                 var grafico = document.getElementById('grafico2');
@@ -128,6 +193,7 @@
             });
         }
 
+        // Función para actualizar el gráfico 3 (presión vs fecha del usuario)
         function actualizarGrafico3(nombre) {
             $.getJSON(`/grafico_pres_vs_fecha_usuario?nombre=${nombre}`, function (data) {
                 var grafico = document.getElementById('grafico3');
@@ -136,6 +202,7 @@
             });
         }
 
+        // Función para actualizar el gráfico 4 (aciertos vs fecha del usuario)
         function actualizarGrafico4(nombre) {
             $.getJSON(`/grafico_aciertos_vs_fecha_usuario?nombre=${nombre}`, function (data) {
                 var grafico = document.getElementById('grafico4');
@@ -144,6 +211,7 @@
             });
         }
 
+        // Función para actualizar el gráfico 5 (aciertos por juego del usuario)
         function actualizarGrafico5(nombre) {
             $.getJSON(`/grafico_aciertos_juego_usuario?nombre=${nombre}`, function (data) {
                 var grafico = document.getElementById('grafico5');
@@ -152,18 +220,26 @@
             });
         }
 
-        // Inicializar el gráfico con nres_inicio=0
+        // Inicializa los gráficos con valores predeterminados
         actualizarGrafico1(0);
+        // Inicia el gráfico 1 con valor predeterminado
         actualizarGrafico2(0);
-        actualizarGrafico3("Sara")
-        actualizarGrafico4("Sara")
-        actualizarGrafico5("Sara")
+        // Inicia el gráfico 2 con valor predeterminado
+        actualizarGrafico3("Sara");
+        // Inicia el gráfico 3 con el usuario "Sara"
+        actualizarGrafico4("Sara");
+        // Inicia el gráfico 4 con el usuario "Sara"
+        actualizarGrafico5("Sara");
+        // Inicia el gráfico 5 con el usuario "Sara"
 
-        // Actualizar el gráfico cada 2 segundos (manteniendo el valor de nres_inicio seleccionado)
+        // Actualiza los gráficos cada 2 segundos
         setInterval(function () {
             var nres_inicio = document.getElementById('nres_inicio').value;
+            // Obtiene el valor de nres_inicio (en este caso, parece que falta un elemento input con id="nres_inicio")
             actualizarGrafico1(nres_inicio);
+            // Actualiza el gráfico 1 cada 2 segundos
             actualizarGrafico2(nres_inicio);
+            // Actualiza el gráfico 2 cada 2 segundos
         }, 2000);
     </script>
 </body>

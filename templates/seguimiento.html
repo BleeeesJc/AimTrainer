@@ -8,16 +8,18 @@
 
     <!-- Cargar las fuentes Orbitron y Roboto desde Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap"
-        rel="stylesheet">
+        rel="stylesheet"> <!-- Enlace a Google Fonts para cargar las fuentes -->
 
     <style>
+        /* Estilos para el cuerpo de la página */
         body {
             margin: 0;
-            overflow: hidden;
-            background-color: #0f2d3e;
-            font-family: 'Roboto', sans-serif;
+            overflow: hidden; /* Evita que aparezcan barras de desplazamiento */
+            background-color: #0f2d3e; /* Color de fondo */
+            font-family: 'Roboto', sans-serif; /* Fuente predeterminada */
         }
 
+        /* Estilos para el encabezado (header) */
         header {
             position: fixed;
             top: 0;
@@ -31,22 +33,25 @@
             font-family: 'Orbitron', sans-serif;
         }
 
+        /* Estilos para el área del juego */
         #game {
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            width: 100vw; /* Ancho completo de la pantalla */
+            height: 100vh; /* Alto completo de la pantalla */
             background-color: #0f2d3e;
         }
 
+        /* Estilos para los objetivos (dianas) */
         .target {
             position: absolute;
-            border-radius: 50%;
+            border-radius: 50%; /* Forma circular */
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        /* Estilos para las diferentes capas de la diana */
         .ring1 {
             background-color: #f94144;
             border-radius: 50%;
@@ -74,6 +79,7 @@
             align-items: center;
         }
 
+        /* Animación de explosión al acertar la diana */
         @keyframes explode {
             0% {
                 transform: scale(1);
@@ -86,10 +92,12 @@
             }
         }
 
+        /* Clase para aplicar la animación de explosión */
         .explode {
             animation: explode 0.3s forwards;
         }
 
+        /* Estilos para el temporizador y los aciertos */
         #timer,
         #score {
             font-family: 'Orbitron', sans-serif;
@@ -109,6 +117,7 @@
             left: 20px;
         }
 
+        /* Estilos para mostrar las vidas */
         #lives {
             position: absolute;
             top: 20px;
@@ -117,6 +126,7 @@
             gap: 30px;
         }
 
+        /* Estilos de los corazones que representan las vidas */
         .heart {
             width: 30px;
             height: 30px;
@@ -124,9 +134,10 @@
             position: relative;
             display: inline-block;
             margin-right: 5px;
-            transform: rotate(-45deg);
+            transform: rotate(-45deg); /* Rotación para dar forma de corazón */
         }
 
+        /* Estilos para las partes superiores del corazón */
         .heart::before,
         .heart::after {
             content: "";
@@ -149,6 +160,7 @@
             top: 0;
         }
 
+        /* Estilos para el botón de inicio */
         #startButton {
             position: absolute;
             top: 50%;
@@ -163,10 +175,12 @@
             border-radius: 10px;
         }
 
+        /* Cambio de color al pasar el cursor sobre el botón de inicio */
         #startButton:hover {
             background-color: #76710d;
         }
 
+        /* Estilos para el modal al finalizar el juego */
         .modal {
             display: none;
             position: fixed;
@@ -175,7 +189,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.4); /* Fondo semitransparente */
         }
 
         .modal-content {
@@ -189,6 +203,7 @@
             border-radius: 15px;
         }
 
+        /* Estilos del botón dentro del modal */
         .modal button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -199,16 +214,19 @@
             border-radius: 10px;
         }
 
+        /* Cambio de color al pasar el cursor sobre el botón del modal */
         .modal button:hover {
             background-color: #76710d;
         }
 
+        /* Estilos de los enlaces en la parte superior derecha */
         .links {
             position: absolute;
             top: 20px;
             right: 100px;
         }
 
+        /* Estilos de los enlaces */
         .links a {
             color: white;
             font-size: 25px;
@@ -217,9 +235,10 @@
         }
 
         .links a:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Subrayar al pasar el cursor */
         }
 
+        /* Estilos del botón de pausa */
         .links #pauseButton {
             color: white;
             font-size: 25px;
@@ -231,9 +250,10 @@
         }
 
         .links #pauseButton:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Subrayar al pasar el cursor */
         }
 
+        /* Estilo para la visualización de la dificultad */
         #difficultyDisplay {
             position: fixed;
             bottom: 20px;
@@ -247,33 +267,35 @@
 
 <body>
     <header>
-        <div id="timer" style="display:none;">60</div>
-        <div id="score">Aciertos: 0</div>
+        <div id="timer" style="display:none;">60</div> <!-- Contador de tiempo, inicialmente oculto -->
+        <div id="score">Aciertos: 0</div> <!-- Muestra los aciertos -->
         <div id="lives">
+            <!-- Tres corazones que representan las vidas -->
             <div class="heart"></div>
             <div class="heart"></div>
             <div class="heart"></div>
         </div>
-        <div class="links"><a href="form.html">Salir</a>
-            <button id="pauseButton">Pausar</button>
+        <div class="links">
+            <a href="form.html">Salir</a> <!-- Enlace para salir del juego -->
+            <button id="pauseButton">Pausar</button> <!-- Botón para pausar el juego -->
         </div>
     </header>
 
-    <div id="game"></div>
+    <div id="game"></div> <!-- Área de juego donde aparecerán las dianas -->
 
-    <button id="startButton">Iniciar Juego</button>
+    <button id="startButton">Iniciar Juego</button> <!-- Botón para iniciar el juego -->
 
-    <!-- Modal personalizado -->
+    <!-- Modal personalizado al finalizar el juego -->
     <div id="endGameModal" class="modal">
         <div class="modal-content">
-            <p id="finalScore"></p>
-            <button id="restartButton">Reiniciar</button>
+            <p id="finalScore"></p> <!-- Texto que muestra los resultados finales -->
+            <button id="restartButton">Reiniciar</button> <!-- Botón para reiniciar el juego -->
         </div>
     </div>
 
     <script>
         let gameOver = false;
-        let isHolding = false; // Variable global para saber si el jugador está presionando la diana
+        let isHolding = false; // Variable para saber si el jugador está presionando la diana
         const game = document.getElementById('game');
         const timerDisplay = document.getElementById('timer');
         const scoreDisplay = document.getElementById('score');
@@ -283,24 +305,24 @@
         const finalScoreText = document.getElementById('finalScore');
         const restartButton = document.getElementById('restartButton');
 
-        let timeLeft = 60; // Tiempo en segundos
-        const targetSize = [100]; // Tamaño estático de la diana
+        let timeLeft = 60; // Tiempo inicial del juego en segundos
+        const targetSize = [100]; // Tamaño fijo de la diana
         let gameInterval, timerInterval;
         let score = 0;
         let totalTargets = 0;
-        let lives = 3;
+        let lives = 3; // Vidas iniciales
         let targetInterval = 2500; // Las dianas aparecerán cada 2.5 segundos
 
-        // Mantiene el objetivo actual
-        let currentTarget = null;
+        let currentTarget = null; // Mantiene el objetivo actual
 
-        // Mueve la diana constantemente
+        // Función para mover la diana
         function moveTarget(target) {
             let directionX = Math.random() < 0.5 ? 1 : -1;
             let directionY = Math.random() < 0.5 ? 1 : -1;
             const speed = 1;
 
             function move() {
+                if (isPaused || target.dataset.hit) return; // Si el juego está pausado o la diana ha sido golpeada
                 const currentLeft = parseFloat(target.style.left);
                 const currentTop = parseFloat(target.style.top);
                 const newLeft = currentLeft + directionX * speed;
@@ -325,30 +347,28 @@
             move();
         }
 
+        // Función para crear la diana
         function createTarget() {
-            if (isHolding) {
-                return; // Salimos de la función sin hacer nada
-            }
+            if (isHolding || isPaused) return; // Evita crear dianas mientras el jugador mantiene presionada la diana o el juego está pausado
 
-            // Si ya hay una diana, elimínala antes de crear una nueva
             if (currentTarget) {
                 if (!currentTarget.dataset.hit) {
-                    loseLife(); // Perder una vida si no se ha acertado la diana anterior
+                    loseLife(); // Si no golpeas la diana, pierdes una vida
                 }
                 currentTarget.remove();
             }
 
-            let x, y, size = targetSize[0]; // Tamaño estático
+            let x, y, size = targetSize[0];
 
             do {
                 x = Math.random() * (window.innerWidth - size);
                 y = Math.random() * (window.innerHeight - size);
-            } while (isInsideUI(x, y, size)); // Verifica si está en las áreas prohibidas
+            } while (isInsideUI(x, y, size)); // Verifica que no aparezca en las áreas de la interfaz
 
             const target = document.createElement('div');
             target.classList.add('target');
-            target.style.width = `${size}px`; // Tamaño estático
-            target.style.height = `${size}px`; // Tamaño estático
+            target.style.width = `${size}px`;
+            target.style.height = `${size}px`;
             target.style.left = `${x}px`;
             target.style.top = `${y}px`;
 
@@ -365,47 +385,48 @@
             ring3.appendChild(ring2);
             target.appendChild(ring3);
 
+            // Evento cuando el jugador presiona la diana
             target.addEventListener('mousedown', () => {
-                isHolding = true; // El jugador está presionando la diana
+                isHolding = true; // Marca que el jugador está presionando la diana
                 let holdTime = 0;
-                const requiredHoldTime = 2000;
+                const requiredHoldTime = 1500; // Tiempo necesario para acertar la diana
 
                 const holdInterval = setInterval(() => {
                     holdTime += 100;
                     if (holdTime >= requiredHoldTime) {
                         clearInterval(holdInterval);
                         if (!target.dataset.hit) {
-                            score++;
+                            score++; // Incrementa el puntaje
                             scoreDisplay.textContent = `Aciertos: ${score}`;
-                            target.dataset.hit = true; // Establecer que la diana fue acertada
+                            target.dataset.hit = true;
 
                             requestAnimationFrame(() => {
-                                target.classList.add('explode');
+                                target.classList.add('explode'); // Aplica la animación de explosión
                             });
 
                             setTimeout(() => {
                                 target.remove();
-                                isHolding = false; // Asegurarnos de que isHolding es false
-                                createTarget(); // Crear una nueva diana
+                                isHolding = false; // El jugador deja de presionar
+                                createTarget(); // Crea una nueva diana
                             }, 300);
                         }
                     }
                 }, 100);
 
+                // Evento cuando el jugador suelta la diana
                 target.addEventListener('mouseup', () => {
-                    isHolding = false; // El jugador ha soltado la diana
+                    isHolding = false;
                     clearInterval(holdInterval);
-                }, { once: true }); // Agregamos { once: true } para evitar múltiples listeners
+                }, { once: true });
             });
 
-
             game.appendChild(target);
-            currentTarget = target; // Guardar la diana actual
-
-            moveTarget(target);
+            currentTarget = target;
+            moveTarget(target); // Mueve la diana
             totalTargets++;
         }
 
+        // Verifica si la diana está dentro de las áreas de la interfaz
         function isInsideUI(x, y, size) {
             const timerRect = document.getElementById('timer').getBoundingClientRect();
             const livesRect = document.getElementById('lives').getBoundingClientRect();
@@ -422,29 +443,32 @@
             return false;
         }
 
+        // Función para perder una vida
         function loseLife() {
             lives--;
             updateLivesDisplay();
             if (lives <= 0 && !gameOver) {
-                endGame();
+                endGame(); // Termina el juego si te quedas sin vidas
             }
         }
 
+        // Actualiza el display de las vidas
         function updateLivesDisplay() {
             const hearts = livesDisplay.querySelectorAll('.heart');
             hearts.forEach((heart, index) => {
                 if (index >= lives) {
-                    heart.style.visibility = 'hidden';
+                    heart.style.visibility = 'hidden'; // Esconde corazones según las vidas restantes
                 } else {
                     heart.style.visibility = 'visible';
                 }
             });
         }
 
+        // Función para iniciar el juego
         function startGame() {
             gameOver = false;
-            startButton.style.display = 'none';
-            timerDisplay.style.display = 'block';
+            startButton.style.display = 'none'; // Oculta el botón de inicio
+            timerDisplay.style.display = 'block'; // Muestra el temporizador
             timeLeft = 60;
             timerDisplay.textContent = timeLeft;
             score = 0;
@@ -452,24 +476,27 @@
             lives = 3;
             scoreDisplay.textContent = `Aciertos: ${score}`;
             updateLivesDisplay();
-            difucultades();
+            difucultades(); // Asigna la dificultad
 
             gameInterval = setInterval(() => {
                 if (!isHolding) {
-                    createTarget();
+                    createTarget(); // Crea dianas mientras no se esté manteniendo una
                 }
             }, targetInterval);
 
             timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
+                if (!isPaused) {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
 
-                if (timeLeft <= 0 && !gameOver) {
-                    endGame();
+                    if (timeLeft <= 0 && !gameOver) {
+                        endGame(); // Termina el juego cuando el tiempo llega a 0
+                    }
                 }
-            }, 3000);
+            }, 1000);
         }
 
+        // Función para terminar el juego
         function endGame() {
             if (gameOver) return;
 
@@ -477,24 +504,25 @@
             clearInterval(gameInterval);
             clearInterval(timerInterval);
 
-            let precision = ((score / totalTargets) * 100).toFixed(2);
+            let precision = ((score / totalTargets) * 100).toFixed(2); // Calcula la precisión
 
             finalScoreText.innerHTML = `El juego ha terminado<br>
                                         Aciertos: ${score}<br>
                                         Tiempo: ${60 - timeLeft} segundos<br>
                                         Precisión: ${precision}%`;
-            endGameModal.style.display = "block";
-            enviarResultados(score, 60 - timeLeft, precision);
+            endGameModal.style.display = "block"; // Muestra el modal con los resultados
+            enviarResultados(score, 60 - timeLeft, precision); // Envía los resultados al servidor
         }
 
         restartButton.addEventListener('click', () => {
-            window.location.reload();
+            window.location.reload(); // Recarga la página para reiniciar el juego
         });
 
-        startButton.addEventListener('click', startGame);
+        startButton.addEventListener('click', startGame); // Inicia el juego al presionar el botón
 
-        let isPaused = false;
+        let isPaused = false; // Variable para manejar el estado de pausa
 
+        // Función para pausar o reanudar el juego
         function togglePause() {
             if (isPaused) {
                 pauseButton.textContent = 'Pausar';
@@ -506,16 +534,25 @@
             isPaused = !isPaused;
         }
 
+        // Función para pausar el juego
         function pauseGame() {
             clearInterval(timerInterval);
             clearInterval(gameInterval);
 
+            // Elimina las dianas actuales y limpia los intervalos
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
-                target.dataset.paused = true;
+                if (target.holdInterval) {
+                    clearInterval(target.holdInterval);
+                }
+                target.remove();
             });
+
+            currentTarget = null; // Asegura que no haya una diana actual
+            isHolding = false; // Resetea la variable isHolding
         }
 
+        // Función para reanudar el juego
         function resumeGame() {
             timerInterval = setInterval(() => {
                 timeLeft--;
@@ -530,12 +567,13 @@
 
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
-                delete target.dataset.paused;
+                delete target.dataset.paused; // Reanuda las dianas pausadas
             });
         }
 
-        pauseButton.addEventListener('click', togglePause);
+        pauseButton.addEventListener('click', togglePause); // Controla el botón de pausa
 
+        // Función para enviar los resultados al servidor
         function enviarResultados(aciertos, tiempo, precision) {
             fetch('http://127.0.0.1:5000/guardar_resultados', {
                 method: 'POST',
@@ -559,8 +597,9 @@
                     alert('Hubo un problema al guardar los resultados: ' + error.message);
                 });
         }
+
+        // Función para asignar la dificultad del juego
         function difucultades(aciertos, tiempo, precision) {
-            // Enviar la dificultad al servidor Flask
             fetch('/guardar_dificultad', {
                 method: 'POST',
                 headers: {
