@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Usuarios</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-add,
+        .btn-csv {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .btn-csv {
+            background-color: #007bff;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        .btn-csv:hover {
+            background-color: #0069d9;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .btn-confirm {
+            background-color: #28a745;
+            /* Verde */
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>CRUD Usuarios</h1>
+
+    <div class="controls">
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Edad</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario[0] }}</td> <!-- ID (No editable) -->
+                <td contenteditable="false" id="usuario-{{ usuario[0] }}">{{ usuario[1] }}</td>
+                <!-- Usuario editable -->
+                <td contenteditable="false" id="email-{{ usuario[0] }}">{{ usuario[2] }}</td> <!-- Email editable -->
+                <td contenteditable="false" id="edad-{{ usuario[0] }}">{{ usuario[3] }}</td> <!-- Edad editable -->
+                <td class="actions">
+                    <button class="btn btn-edit" onclick="habilitarEdicion({{ usuario[0] }})">Editar</button>
+                    <button class="btn btn-delete" onclick="eliminarUsuario({{ usuario[0] }})">Eliminar</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function habilitarEdicion(idUsuario) {
+            // Hacer las celdas de usuario, email y edad editables
+            document.getElementById(`usuario-${idUsuario}`).setAttribute('contenteditable', 'true');
+            document.getElementById(`email-${idUsuario}`).setAttribute('contenteditable', 'true');
+            document.getElementById(`edad-${idUsuario}`).setAttribute('contenteditable', 'true');
+
+            // Cambiar el botón de Editar a Confirmar
+            const boton = document.querySelector(`button[onclick="habilitarEdicion(${idUsuario})"]`);
+            boton.innerText = "Confirmar";
+            boton.classList.remove("btn-edit");
+            boton.classList.add("btn-confirm");
+            boton.setAttribute("onclick", `confirmarEdicion(${idUsuario})`);
+        }
+
+        function eliminarUsuario(idUsuario) {
+            if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+                fetch(`/usuarios/delete/${idUsuario}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        // Eliminar la fila del DOM en tiempo real
+                        const fila = document.getElementById(`fila-${idUsuario}`);
+                        if (fila) {
+                            fila.remove();  // Remueve la fila correspondiente al usuario eliminado
+                        }
+                    } else {
+                        response.json().then(data => {
+                            alert("Error al eliminar el usuario: " + data.error);
+                        });
+                    }
+                }).catch(error => {
+                    console.error("Error al intentar eliminar el usuario:", error);
+                    alert("Ocurrió un error al eliminar el usuario.");
+                });
+            }
+        }
+
+        function confirmarEdicion(idUsuario) {
+            // Obtener los nuevos valores de las celdas editadas
+            const nuevoUsuario = document.getElementById(`usuario-${idUsuario}`).innerText;
+            const nuevoEmail = document.getElementById(`email-${idUsuario}`).innerText;
+            const nuevaEdad = document.getElementById(`edad-${idUsuario}`).innerText;
+
+            // Verificar si los valores no están vacíos o incorrectos
+            if (!nuevoUsuario || !nuevoEmail || !nuevaEdad) {
+                alert("Los campos no pueden estar vacíos.");
+                return;
+            }
+
+            // Hacer una petición AJAX para actualizar los datos en el servidor
+            fetch(`/usuarios/update/${idUsuario}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    usuario: nuevoUsuario,  // Asegúrate de que no falta coma aquí
+                    email: nuevoEmail,      // Asegúrate de que no falta coma aquí
+                    edad: nuevaEdad         // Correcta asignación
+                })
+            }).then(response => {
+                if (response.ok) {
+                    // Deshabilitar edición nuevamente
+                    document.getElementById(`usuario-${idUsuario}`).setAttribute('contenteditable', 'false');
+                    document.getElementById(`email-${idUsuario}`).setAttribute('contenteditable', 'false');
+                    document.getElementById(`edad-${idUsuario}`).setAttribute('contenteditable', 'false');
+
+                    // Cambiar el botón de Confirmar a Editar
+                    const boton = document.querySelector(`button[onclick="confirmarEdicion(${idUsuario})"]`);
+                    boton.innerText = "Editar";
+                    boton.classList.remove("btn-confirm");
+                    boton.classList.add("btn-edit");
+                    boton.setAttribute("onclick", `habilitarEdicion(${idUsuario})`);
+                } else {
+                    alert("Error al actualizar los datos");
+                }
+            }).catch(error => {
+                console.error("Error:", error);
+            });
+        }
+    </script>
+</body>
+
+</html>

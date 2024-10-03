@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard en Tiempo Real</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Jost', sans-serif;
+            background: linear-gradient(to bottom, rgb(5, 3, 26), #0f2d3e, #01466e);
+            color: white;
+        }
+
+        #area_nres,
+        #area_nombre {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #nres_value {
+            margin-left: 10px;
+        }
+
+        .container {
+            margin-top: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Estilos del botón */
+        .btn-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #4CAF50; /* Color del botón */
+            color: white; /* Color del texto */
+            padding: 15px 30px; /* Tamaño del botón (más grande) */
+            font-size: 18px; /* Tamaño del texto */
+            border: none; /* Sin bordes */
+            border-radius: 25px; /* Bordes redondeados */
+            cursor: pointer; /* Manito al pasar sobre el botón */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Sombra */
+            transition: transform 0.2s ease; /* Transición suave */
+        }
+
+        /* Efecto de hover (al pasar el ratón por encima) */
+        button:hover {
+            background-color: #45a049; /* Cambia de color cuando se pasa el mouse */
+            transform: scale(1.05); /* Agranda ligeramente el botón */
+        }
+
+        /* Efecto de click (al hacer clic en el botón) */
+        button:active {
+            transform: scale(0.98); /* Reduce ligeramente el tamaño al hacer clic */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Estadísticas de Aim Trainer</h1>
+    <h2>Gráficas Generales</h2>
+
+    <div class="container" id="container-graficas-globales">
+        <div id="grafico1" style="width:100%;height:600px;"></div>
+        <div id="grafico2" style="width:100%;height:600px; margin-top: 20px;"></div>
+    </div>
+
+    <h2>Gráficas Por Usuarios</h2>
+
+    <div id="area_nombre">
+        <label id="lbl-nombre">Nombre:</label>
+        <input type="text" id="nombre" minlength="1" placeholder="Nombre de usuario"
+            oninput="actualizarUsuario(this.value)">
+    </div>
+
+    <div class="container" id="container-graficas-usuarios">
+        <div id="grafico3" style="width:100%;height:600px;"></div>
+        <div id="grafico4" style="width:100%;height:600px; margin-top: 20px;"></div>
+        <div id="grafico5" style="width:100%;height:600px; margin-top: 20px;"></div>
+    </div>
+
+    <div class="btn-container">
+        <h1>Descargar Resultados de Jugadores</h1>
+        <!-- Botón para descargar el archivo CSV -->
+        <a href="/descargar_csv" download="resultados_jugadores.csv">
+            <button>Descargar CSV</button>
+        </a>
+    </div>
+
+    <script>
+
+        function actualizarUsuario(valor) {
+            document.getElementById('nombre').innerHTML = valor;
+            actualizarGrafico3(valor);
+            actualizarGrafico4(valor);
+            actualizarGrafico5(valor);
+        }
+
+        // Función para actualizar el gráfico en base al nres_inicio seleccionado
+        function actualizarGrafico1() {
+            $.getJSON(`/grafico_pres_vs_edad?`, function (data) {
+                var grafico = document.getElementById('grafico1');
+                var parsedData = JSON.parse(data);
+                Plotly.react(grafico, parsedData.data, parsedData.layout);
+            });
+        }
+
+        function actualizarGrafico2() {
+            $.getJSON(`/grafico_aciertos_vs_edad`, function (data) {
+                var grafico = document.getElementById('grafico2');
+                var parsedData = JSON.parse(data);
+                Plotly.react(grafico, parsedData.data, parsedData.layout);
+            });
+        }
+
+        function actualizarGrafico3(nombre) {
+            $.getJSON(`/grafico_pres_vs_fecha_usuario?nombre=${nombre}`, function (data) {
+                var grafico = document.getElementById('grafico3');
+                var parsedData = JSON.parse(data);
+                Plotly.react(grafico, parsedData.data, parsedData.layout);
+            });
+        }
+
+        function actualizarGrafico4(nombre) {
+            $.getJSON(`/grafico_aciertos_vs_fecha_usuario?nombre=${nombre}`, function (data) {
+                var grafico = document.getElementById('grafico4');
+                var parsedData = JSON.parse(data);
+                Plotly.react(grafico, parsedData.data, parsedData.layout);
+            });
+        }
+
+        function actualizarGrafico5(nombre) {
+            $.getJSON(`/grafico_aciertos_juego_usuario?nombre=${nombre}`, function (data) {
+                var grafico = document.getElementById('grafico5');
+                var parsedData = JSON.parse(data);
+                Plotly.react(grafico, parsedData.data, parsedData.layout);
+            });
+        }
+
+        // Inicializar el gráfico con nres_inicio=0
+        actualizarGrafico1(0);
+        actualizarGrafico2(0);
+        actualizarGrafico3("Sara")
+        actualizarGrafico4("Sara")
+        actualizarGrafico5("Sara")
+
+        // Actualizar el gráfico cada 2 segundos (manteniendo el valor de nres_inicio seleccionado)
+        setInterval(function () {
+            var nres_inicio = document.getElementById('nres_inicio').value;
+            actualizarGrafico1(nres_inicio);
+            actualizarGrafico2(nres_inicio);
+        }, 2000);
+    </script>
+</body>
+
+</html>
