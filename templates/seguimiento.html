@@ -301,6 +301,7 @@
             const speed = 1;
 
             function move() {
+                if (isPaused || target.dataset.hit) return; // Detener el movimiento si el juego está pausado
                 const currentLeft = parseFloat(target.style.left);
                 const currentTop = parseFloat(target.style.top);
                 const newLeft = currentLeft + directionX * speed;
@@ -326,9 +327,10 @@
         }
 
         function createTarget() {
-            if (isHolding) {
+            if (isHolding || isPaused) {
                 return; // Salimos de la función sin hacer nada
             }
+
 
             // Si ya hay una diana, elimínala antes de crear una nueva
             if (currentTarget) {
@@ -368,7 +370,7 @@
             target.addEventListener('mousedown', () => {
                 isHolding = true; // El jugador está presionando la diana
                 let holdTime = 0;
-                const requiredHoldTime = 2000;
+                const requiredHoldTime = 1500;//Tiempo requerido para que cuente como acierto
 
                 const holdInterval = setInterval(() => {
                     holdTime += 100;
@@ -461,13 +463,16 @@
             }, targetInterval);
 
             timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
+                if (!isPaused) {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
 
-                if (timeLeft <= 0 && !gameOver) {
-                    endGame();
+                    if (timeLeft <= 0 && !gameOver) {
+                        endGame();
+                    }
                 }
-            }, 3000);
+            }, 1000);
+
         }
 
         function endGame() {
@@ -506,15 +511,25 @@
             isPaused = !isPaused;
         }
 
+
         function pauseGame() {
             clearInterval(timerInterval);
             clearInterval(gameInterval);
 
+            // Eliminar dianas actuales y limpiar sus intervalos
             const targets = document.querySelectorAll('.target');
             targets.forEach(target => {
-                target.dataset.paused = true;
+                if (target.holdInterval) {
+                    clearInterval(target.holdInterval);
+                }
+                target.remove();
             });
+
+            currentTarget = null; // Asegurarnos de que no hay diana actual
+            isHolding = false; // Asegurarnos de que isHolding es false
         }
+
+
 
         function resumeGame() {
             timerInterval = setInterval(() => {
